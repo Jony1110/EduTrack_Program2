@@ -1,7 +1,13 @@
+using EduTrack.Web.Data;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddDbContext<EduTrackDbContext>(p =>
+    p.UseSqlServer(builder.Configuration.GetConnectionString("EduTrackStrConnection")));
 
 var app = builder.Build();
 
