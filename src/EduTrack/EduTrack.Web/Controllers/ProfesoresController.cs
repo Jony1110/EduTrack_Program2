@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using EduTrack.Web.Data;
 using EduTrack.Web.Models.Entities;
+using EduTrack.Web.Models.ViewModels;
 
 namespace EduTrack.Web.Controllers
 {
@@ -54,90 +55,122 @@ namespace EduTrack.Web.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Lastname,Email,Phone,Gender,Birthdate,IsActive")] Profesor profesor)
+        public async Task<IActionResult> Create(CreateProfesorViewModel vm)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(profesor);
+                var dbProfesor = new Profesor();
+
+                //dbProfesor.Id = vm.Id;
+                dbProfesor.Name = vm.Name;
+                dbProfesor.Lastname = vm.Lastname;
+                dbProfesor.Email = vm.Email;
+                dbProfesor.Phone = vm.Phone;
+                dbProfesor.Gender = vm.Gender;
+                dbProfesor.Birthdate = vm.Birthdate;
+                dbProfesor.IsActive = vm.IsActive;
+
+                _context.Profesores.Add(dbProfesor);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(profesor);
+            return View(vm);
         }
 
         // GET: Profesores/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(int id)
         {
-            if (id == null)
+           
+            var profesorDb = await _context.Profesores.FindAsync(id);
+
+            if (profesorDb == null)
             {
                 return NotFound();
             }
 
-            var profesor = await _context.Profesores.FindAsync(id);
-            if (profesor == null)
-            {
-                return NotFound();
-            }
-            return View(profesor);
+            var vm = new EditProfesorViewModel();
+
+            vm.Id = profesorDb.Id;
+            vm.Name = profesorDb.Name;
+            vm.Lastname = profesorDb.Lastname;
+            vm.Email = profesorDb.Email;
+            vm.Phone = profesorDb.Phone;
+            vm.Gender = profesorDb.Gender;
+            vm.Birthdate = profesorDb.Birthdate;
+            vm.IsActive = profesorDb.IsActive;
+
+            return View(vm);
         }
 
-        // POST: Profesores/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Lastname,Email,Phone,Gender,Birthdate,IsActive")] Profesor profesor)
+        public async Task<IActionResult> Edit(int id, EditProfesorViewModel vm)
         {
-            if (id != profesor.Id)
-            {
-                return NotFound();
-            }
+
+            var dbProfesor = await _context.Profesores.FindAsync(id);
+
+            //if (id != vm.Id)
+            //{
+            //    return NotFound();
+            //}
 
             if (ModelState.IsValid)
             {
-                try
-                {
-                    _context.Update(profesor);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!ProfesorExists(profesor.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
+
+
+                //var dbProfesor = new EditProfesorViewModel();
+                
+                dbProfesor.Name = vm.Name;
+                dbProfesor.Lastname = vm.Lastname;
+                dbProfesor.Email = vm.Email;
+                dbProfesor.Phone = vm.Phone;
+                dbProfesor.Gender = vm.Gender;
+                dbProfesor.Birthdate = vm.Birthdate;
+                dbProfesor.IsActive = vm.IsActive;
+
+                _context.Profesores.Update(dbProfesor);
+                await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(profesor);
+            return View(vm);
         }
 
         // GET: Profesores/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(int id)
         {
+            var profesorDb = await _context.Profesores.FindAsync(id);
+
             if (id == null)
             {
                 return NotFound();
             }
 
-            var profesor = await _context.Profesores
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (profesor == null)
+            //var profesor = await _context.Profesores
+            //    .FirstOrDefaultAsync(m => m.Id == id);
+            //if (profesor == null)
+            //{
+            //    return NotFound();
+            //}
+
+            var vm = new DeleteProfesorViewModel();
             {
-                return NotFound();
+                vm.Id = profesorDb.Id;
+                vm.Name = profesorDb.Name;
+                vm.Lastname = profesorDb.Lastname;
+                vm.Email = profesorDb.Email;
+                vm.Phone = profesorDb.Phone;
+                vm.Gender = profesorDb.Gender;
+                vm.Birthdate = profesorDb.Birthdate;
+                vm.IsActive = profesorDb.IsActive;
             }
 
-            return View(profesor);
+            return View(vm);
         }
 
         // POST: Profesores/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(int id, DeleteProfesorViewModel vm)
         {
             var profesor = await _context.Profesores.FindAsync(id);
             if (profesor != null)

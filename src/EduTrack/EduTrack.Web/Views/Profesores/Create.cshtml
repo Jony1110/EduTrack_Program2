@@ -1,4 +1,4 @@
-﻿@model EduTrack.Web.Models.Entities.Profesor
+﻿@model EduTrack.Web.Models.ViewModels.CreateProfesorViewModel
 
 @{
     ViewData["Title"] = "Create";
@@ -48,15 +48,15 @@
                 </label>
             </div>
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <input type="submit" value="Save" class="btn btn-primary" /> | <a asp-action="Index" class="btn btn-outline-secondary custom-btn">Back to List</a>
             </div>
         </form>
     </div>
 </div>
 
-<div>
+@* <div>
     <a asp-action="Index">Back to List</a>
-</div>
+</div> *@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
