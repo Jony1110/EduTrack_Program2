@@ -11,5 +11,7 @@ namespace EduTrack.Web.Data
         }
 
         public DbSet<Profesor> Profesores { get; set; }
+        public DbSet<Clase> Clases { get; set; }
+        public DbSet<ClaseDetalle> ClaseDetalles { get; set; }
     }
 }
