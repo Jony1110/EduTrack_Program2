@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using EduTrack.Web.Data;
+﻿using EduTrack.Domain;
 using EduTrack.Domain.Entities;
 using EduTrack.Domain.ViewModels;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace EduTrack.Web.Controllers
 {
@@ -80,7 +75,7 @@ namespace EduTrack.Web.Controllers
         // GET: Profesores/Edit/5
         public async Task<IActionResult> Edit(int id)
         {
-           
+
             var profesorDb = await _context.Profesores.FindAsync(id);
 
             if (profesorDb == null)
@@ -119,7 +114,7 @@ namespace EduTrack.Web.Controllers
 
 
                 //var dbProfesor = new EditProfesorViewModel();
-                
+
                 dbProfesor.Name = vm.Name;
                 dbProfesor.Lastname = vm.Lastname;
                 dbProfesor.Email = vm.Email;

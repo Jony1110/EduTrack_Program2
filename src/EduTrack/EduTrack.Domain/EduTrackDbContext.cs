@@ -1,7 +1,7 @@
 ﻿using EduTrack.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace EduTrack.Web.Data
+namespace EduTrack.Domain
 {
     public class EduTrackDbContext: DbContext
     {

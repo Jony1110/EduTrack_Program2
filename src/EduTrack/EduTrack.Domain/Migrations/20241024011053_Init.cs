@@ -2,7 +2,7 @@
 
 #nullable disable
 
-namespace EduTrack.Web.Migrations
+namespace EduTrack.Domain.Migrations
 {
     /// <inheritdoc />
     public partial class Init : Migration
