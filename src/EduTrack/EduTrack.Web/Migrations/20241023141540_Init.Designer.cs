@@ -24,7 +24,7 @@ namespace EduTrack.Web.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("EduTrack.Web.Models.Entities.Clase", b =>
+            modelBuilder.Entity("EduTrack.Domain.Entities.Clase", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -52,7 +52,7 @@ namespace EduTrack.Web.Migrations
                     b.ToTable("Clases");
                 });
 
-            modelBuilder.Entity("EduTrack.Web.Models.Entities.ClaseDetalle", b =>
+            modelBuilder.Entity("EduTrack.Domain.Entities.ClaseDetalle", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -69,7 +69,7 @@ namespace EduTrack.Web.Migrations
                     b.ToTable("ClaseDetalles");
                 });
 
-            modelBuilder.Entity("EduTrack.Web.Models.Entities.Profesor", b =>
+            modelBuilder.Entity("EduTrack.Domain.Entities.Profesor", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -114,9 +114,9 @@ namespace EduTrack.Web.Migrations
                     b.ToTable("Profesores");
                 });
 
-            modelBuilder.Entity("EduTrack.Web.Models.Entities.Clase", b =>
+            modelBuilder.Entity("EduTrack.Domain.Entities.Clase", b =>
                 {
-                    b.HasOne("EduTrack.Web.Models.Entities.Profesor", "Profesor")
+                    b.HasOne("EduTrack.Domain.Entities.Profesor", "Profesor")
                         .WithMany("Clases")
                         .HasForeignKey("ProfesorId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -125,7 +125,7 @@ namespace EduTrack.Web.Migrations
                     b.Navigation("Profesor");
                 });
 
-            modelBuilder.Entity("EduTrack.Web.Models.Entities.Profesor", b =>
+            modelBuilder.Entity("EduTrack.Domain.Entities.Profesor", b =>
                 {
                     b.Navigation("Clases");
                 });

@@ -6,8 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using EduTrack.Web.Data;
-using EduTrack.Web.Models.Entities;
-using EduTrack.Web.Models.ViewModels;
+using EduTrack.Domain.Entities;
+using EduTrack.Domain.ViewModels;
 
 namespace EduTrack.Web.Controllers
 {

@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace EduTrack.Web.Models.Entities
+namespace EduTrack.Domain.Entities
 {
     public class Profesor
     {

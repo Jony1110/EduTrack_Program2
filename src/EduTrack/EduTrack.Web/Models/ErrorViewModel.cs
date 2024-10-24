@@ -1,4 +1,4 @@
-namespace EduTrack.Web.Models
+namespace EduTrack.Domain
 {
     public class ErrorViewModel
     {

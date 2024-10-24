@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace EduTrack.Web.Models.ViewModels
+namespace EduTrack.Domain.ViewModels
 {
     public class DeleteProfesorViewModel: ProfesorViewModel
     {

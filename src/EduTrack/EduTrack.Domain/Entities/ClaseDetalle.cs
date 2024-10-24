@@ -1,4 +1,4 @@
-﻿namespace EduTrack.Web.Models.Entities
+﻿namespace EduTrack.Domain.Entities
 {
     public class ClaseDetalle
     {

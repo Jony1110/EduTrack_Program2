@@ -1,4 +1,4 @@
-using EduTrack.Web.Models;
+using EduTrack.Domain;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
