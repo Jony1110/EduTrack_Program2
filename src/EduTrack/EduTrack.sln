@@ -9,6 +9,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EduTrack.API", "EduTrack.AP
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EduTrack.Domain", "EduTrack.Domain\EduTrack.Domain.csproj", "{14CC6BD9-B4D8-4C50-A97F-CBBB20002CC0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EduTrack.Application", "EduTrack.Application\EduTrack.Application.csproj", "{7A8E5D62-B114-4746-9833-B309C5ACEF70}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EduTrack.Infraestructure", "EduTrack.Infraestructure\EduTrack.Infraestructure.csproj", "{3718C05D-7142-449F-9DD3-D8D6A67C12C3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +31,14 @@ Global
 		{14CC6BD9-B4D8-4C50-A97F-CBBB20002CC0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{14CC6BD9-B4D8-4C50-A97F-CBBB20002CC0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{14CC6BD9-B4D8-4C50-A97F-CBBB20002CC0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7A8E5D62-B114-4746-9833-B309C5ACEF70}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7A8E5D62-B114-4746-9833-B309C5ACEF70}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7A8E5D62-B114-4746-9833-B309C5ACEF70}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7A8E5D62-B114-4746-9833-B309C5ACEF70}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3718C05D-7142-449F-9DD3-D8D6A67C12C3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3718C05D-7142-449F-9DD3-D8D6A67C12C3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3718C05D-7142-449F-9DD3-D8D6A67C12C3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3718C05D-7142-449F-9DD3-D8D6A67C12C3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
