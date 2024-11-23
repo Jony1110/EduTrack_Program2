@@ -1,6 +1,7 @@
 ﻿using EduTrack.API.Dtos;
 using EduTrack.Domain;
 using EduTrack.Domain.Entities;
+using EduTrack.Domain.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -15,6 +16,32 @@ namespace EduTrack.API.Controllers
         public ProfesorController(EduTrackDbContext context)
         {
             _context = context;
+        }
+
+        [HttpGet("GetProfesor/{id}")]
+        public async Task<ActionResult<ProfesorDto>> GetProfesor(int id)
+        {
+            var profesorDb = await _context.Profesores.FindAsync(id);
+            if (profesorDb == null)
+            {
+                return NotFound();
+            }
+
+            var response = new ProfesorDto
+            {
+                Id = profesorDb.Id,
+                Gender = profesorDb.Gender,
+                Email = profesorDb.Email,
+                IsActive = profesorDb.IsActive,
+                Lastname = profesorDb.Lastname,
+                Name = profesorDb.Name,
+                Phone = profesorDb.Phone
+            };
+
+
+            //return profesorDb;
+            return response;
+
         }
 
         [HttpGet(nameof(GetProfesores))]
@@ -41,7 +68,9 @@ namespace EduTrack.API.Controllers
 
             _context.Profesores.Add(dbProfesor);
             await _context.SaveChangesAsync();
-            return new CreateProfesorResponse { Id = dbProfesor.Id};
+            return new CreateProfesorResponse { Id = dbProfesor.Id };
         }
+
+
     }
 }
