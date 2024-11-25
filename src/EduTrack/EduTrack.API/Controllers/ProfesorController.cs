@@ -13,11 +13,11 @@ namespace EduTrack.API.Controllers
     [Route("[controller]")]
     public class ProfesorController : ControllerBase
     {
-        private readonly EduTrackDbContext _context;
+        private readonly ProfesorRepository _repo;
 
-        public ProfesorController(ProfesorRepository context)
+        public ProfesorController(ProfesorRepository repo)
         {
-            _context = context;
+            _repo = repo;
         }
 
         [HttpGet("GetProfesor/{id}")]
@@ -47,9 +47,9 @@ namespace EduTrack.API.Controllers
         }
 
         [HttpGet(nameof(GetProfesores))]
-        public async Task<ActionResult<List<Profesor>>> GetProfesores()
+        public async Task<ActionResult<List<ProfesorDto>>> GetProfesores()
         {
-            var profesores = await _context.Profesores.ToListAsync();
+            var profesores = await _repo.GetAll();
 
             return profesores;
         }

@@ -20,7 +20,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\EduTrack.Common\EduTrack.Common.csproj" />
     <ProjectReference Include="..\EduTrack.Domain\EduTrack.Domain.csproj" />
+    <ProjectReference Include="..\EduTrack.Infraestructure\EduTrack.Infraestructure.csproj" />
     <ProjectReference Include="..\EduTrack.Persistence\EduTrack.Persistence.csproj" />
   </ItemGroup>
 

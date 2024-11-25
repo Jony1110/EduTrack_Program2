@@ -8,9 +8,12 @@
 
   <ItemGroup>
     <Folder Include="Data\" />
-    <Folder Include="Interfaces\" />
     <Folder Include="Persistence\" />
-    <Folder Include="Repositories\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\EduTrack.Common\EduTrack.Common.csproj" />
+    <ProjectReference Include="..\EduTrack.Persistence\EduTrack.Persistence.csproj" />
   </ItemGroup>
 
 </Project>
