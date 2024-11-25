@@ -6,7 +6,7 @@ namespace EduTrack.Web.Controllers
 {
     public class HomeController : Controller
     {
-       public HomeController()
+        public HomeController()
         {
         }
 

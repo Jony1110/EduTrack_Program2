@@ -1,4 +1,5 @@
 using EduTrack.Domain;
+using EduTrack.Persistence;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);

@@ -1,13 +1,13 @@
 ﻿using EduTrack.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace EduTrack.Domain
+namespace EduTrack.Persistence
 {
-    public class EduTrackDbContext: DbContext
+    public class EduTrackDbContext : DbContext
     {
-        public EduTrackDbContext(DbContextOptions < EduTrackDbContext> options): base (options) 
+        public EduTrackDbContext(DbContextOptions<EduTrackDbContext> options) : base(options)
         {
-          
+
         }
 
         public DbSet<Profesor> Profesores { get; set; }

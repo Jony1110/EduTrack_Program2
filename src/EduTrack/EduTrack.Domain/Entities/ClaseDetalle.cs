@@ -1,8 +1,10 @@
-﻿namespace EduTrack.Domain.Entities
+﻿using EduTrack.Domain.Core;
+
+namespace EduTrack.Domain.Entities
 {
-    public class ClaseDetalle
+    public class ClaseDetalle: BaseEntity
     {
-        public int Id { get; set; }
+        //public int Id { get; set; }
         public string SubjectDescription { get; set; }
     }
 }

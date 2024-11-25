@@ -2,6 +2,8 @@
 using EduTrack.Domain;
 using EduTrack.Domain.Entities;
 using EduTrack.Domain.ViewModels;
+using EduTrack.Infraestructure.Repositories;
+using EduTrack.Persistence;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,7 +15,7 @@ namespace EduTrack.API.Controllers
     {
         private readonly EduTrackDbContext _context;
 
-        public ProfesorController(EduTrackDbContext context)
+        public ProfesorController(ProfesorRepository context)
         {
             _context = context;
         }

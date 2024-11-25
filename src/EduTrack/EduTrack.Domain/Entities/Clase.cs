@@ -1,11 +1,12 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using EduTrack.Domain.Core;
+using System.ComponentModel.DataAnnotations;
 
 namespace EduTrack.Domain.Entities
 {
-    public class Clase
+    public class Clase: BaseEntity
     {
-        [Key]
-        public int Id { get; set; }
+        //[Key]
+        //public int Id { get; set; }
         [StringLength(100)]
         public string NameClass { get; set; }
         public int ProfesorId { get; set; } 
