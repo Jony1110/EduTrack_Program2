@@ -1,4 +1,6 @@
-﻿using EduTrack.Domain.ViewModels;
+﻿using EduTrack.API.Dtos;
+using EduTrack.Domain.Entities;
+using EduTrack.Domain.ViewModels;
 using EduTrack.Persistence;
 using Microsoft.EntityFrameworkCore;
 
@@ -21,45 +23,62 @@ namespace EduTrack.Infraestructure.Repositories
             if (!profesoresFromDb.Any())
                 throw new Exception("No Data Found");
 
-            foreach (var item in profesoresFromDb)
+            foreach (var profesorDb in profesoresFromDb)
             {
                 profesores.Add(new ProfesorDto
                 {
-                    Id = item.Id,
-                    Gender = item.Gender,
-                    Email = item.Email,
-                    IsActive = item.IsActive,
-                    Lastname = item.Lastname,
-                    Name = item.Name,
-                    Phone = item.Phone
+                    Id = profesorDb.Id,
+                    Gender = profesorDb.Gender,
+                    Email = profesorDb.Email,
+                    IsActive = profesorDb.IsActive,
+                    Lastname = profesorDb.Lastname,
+                    Name = profesorDb.Name,
+                    Phone = profesorDb.Phone
 
                 });
             }
             return profesores;
         }
-        public async Task<List<ProfesorDto>> Get(int id)
+        public async Task<ProfesorDto> Get(int id)
         {
-            var profesoreFromDb = await _context.Profesores.ToListAsync();
-            var profesores = new List<ProfesorDto>();
+            var profesorDb = await _context.Profesores.FindAsync(id);
+            //var profesores = new ProfesorDto();
 
-            if (!profesoreFromDb.Any())
+            if (profesorDb == null)
                 throw new Exception("No Data Found");
 
-            foreach (var item in profesoreFromDb)
+            return new ProfesorDto
             {
-                profesores.Add(new ProfesorDto
-                {
-                    Id = item.Id,
-                    Gender = item.Gender,
-                    Email = item.Email,
-                    IsActive = item.IsActive,
-                    Lastname = item.Lastname,
-                    Name = item.Name,
-                    Phone = item.Phone
+                Id = profesorDb.Id,
+                Gender = profesorDb.Gender,
+                Email = profesorDb.Email,
+                IsActive = profesorDb.IsActive,
+                Lastname = profesorDb.Lastname,
+                Name = profesorDb.Name,
+                Phone = profesorDb.Phone
 
-                });
-            }
-            return profesores;
+            };
+
+        }
+
+        public async Task<CreateProfesorResponse> Add(CreateProfesorRequest request)
+        {
+            var dbProfesor = new Profesor();
+
+            //dbProfesor.Id = vm.Id;
+            dbProfesor.Name = request.Name;
+            dbProfesor.Lastname = request.Lastname;
+            dbProfesor.Email = request.Email;
+            dbProfesor.Phone = request.Phone;
+            dbProfesor.Gender = request.Gender;
+            dbProfesor.Birthdate = request.Birthdate;
+            dbProfesor.IsActive = request.IsActive;
+
+            _context.Profesores.Add(dbProfesor);
+            await _context.SaveChangesAsync();
+
+            return new CreateProfesorResponse { Id = dbProfesor.Id };
+
         }
     }
 }

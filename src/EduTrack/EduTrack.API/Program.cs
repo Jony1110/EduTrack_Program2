@@ -1,4 +1,5 @@
 using EduTrack.Domain;
+using EduTrack.Infraestructure.Repositories;
 using EduTrack.Persistence;
 using Microsoft.EntityFrameworkCore;
 
@@ -8,6 +9,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<EduTrackDbContext>(p =>
     p.UseSqlServer(builder.Configuration.GetConnectionString("EduTrackStrConnection")));
+
+builder.Services.AddTransient<ProfesorRepository>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

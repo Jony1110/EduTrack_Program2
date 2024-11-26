@@ -1,4 +1,8 @@
-﻿using System;
+﻿using EduTrack.API.Dtos;
+using EduTrack.Domain.Entities;
+using EduTrack.Domain.ViewModels;
+using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,5 +12,11 @@ namespace EduTrack.Infraestructure.Repositories
 {
     public interface IProfesorRepository
     {
+        //Firma
+
+        Task<List<ProfesorDto>> GetAll();
+        Task<ProfesorDto> Get(int id);
+        Task<CreateProfesorResponse> Add(CreateProfesorRequest request);
+        
     }
 }

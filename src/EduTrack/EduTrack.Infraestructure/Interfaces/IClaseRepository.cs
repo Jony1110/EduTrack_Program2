@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EduTrack.Infraestructure.Repositories
+namespace EduTrack.Infrastructure.Repositories
 {
     public interface IClaseRepository
     {
