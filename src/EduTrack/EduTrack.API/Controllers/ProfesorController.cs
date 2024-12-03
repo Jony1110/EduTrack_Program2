@@ -11,105 +11,97 @@ namespace EduTrack.API.Controllers
     {
         private readonly ProfesorRepository _repo;
 
-        //EnvironmentVariablesExtensions context = new 
-
-        //_repo = new ProfesorRepository()
-
         public ProfesorController(ProfesorRepository repo)
         {
             _repo = repo;
         }
 
+        // Obtener un profesor por ID
         [HttpGet("GetProfesor/{id}")]
         public async Task<ActionResult<ProfesorDto>> GetProfesor(int id)
         {
             var profesor = await _repo.Get(id);
             if (profesor == null)
             {
-                return NotFound();
+                return NotFound($"No se encontró un profesor con el ID {id}.");
             }
 
-            //var response = new ProfesorDto
-            //{
-            //    Id = profesorDb.Id,
-            //    Gender = profesorDb.Gender,
-            //    Email = profesorDb.Email,
-            //    IsActive = profesorDb.IsActive,
-            //    Lastname = profesorDb.Lastname,
-            //    Name = profesorDb.Name,
-            //    Phone = profesorDb.Phone
-            //};
-
-
-            //return profesorDb;
             return profesor;
-
         }
 
+        // Obtener todos los profesores
         [HttpGet(nameof(GetProfesores))]
         public async Task<ActionResult<List<ProfesorDto>>> GetProfesores()
         {
             var profesores = await _repo.GetAll();
-
             return profesores;
         }
 
-        [HttpPost(nameof(AddProfesor))]
-        public async Task<ActionResult<CreateProfesorResponse>> AddProfesor(CreateProfesorRequest request)
+        // Agregar un nuevo profesor
+        // Método para manejar solicitudes OPTIONS (Preflight)
+        [HttpOptions("AddProfesor")]
+        public IActionResult Preflight()
         {
-            //var dbProfesor = new Profesor();
-
-            //dbProfesor.Id = request.Id;
-            //dbProfesor.Name = request.Name;
-            //dbProfesor.Lastname = request.Lastname;
-            //dbProfesor.Email = request.Email;
-            //dbProfesor.Phone = request.Phone;
-            //dbProfesor.Gender = request.Gender;
-            //dbProfesor.Birthdate = request.Birthdate;
-            //dbProfesor.IsActive = request.IsActive;
-
-            //_context.Profesores.Add(dbProfesor);
-            //await _context.SaveChangesAsync();
-
-            //return new CreateProfesorResponse { Id = dbProfesor.Id };
-
-            return await _repo.Add(request);
-
+            Response.Headers.Add("Access-Control-Allow-Origin", "https://localhost:7019");
+            Response.Headers.Add("Access-Control-Allow-Methods", "POST, OPTIONS");
+            Response.Headers.Add("Access-Control-Allow-Headers", "Content-Type");
+            return Ok();
         }
 
-        //[HttpPut("UpdateCustomer/{id}")]
-        //public async Task<IActionResult> UpdateCustomer(int id, CreateProfesorRequest request)
-        //{
-        //    var profesor = await _repo.Update(id);
-        //    if (profesor == null)
-        //    {
-        //        return NotFound();
-        //    }
+        // Método POST para agregar un profesor
+        [HttpPost(nameof(AddProfesor))]
+        public async Task<ActionResult<CreateProfesorResponse>> AddProfesor([FromBody] CreateProfesorRequest request)
+        {
+            if (request == null)
+            {
+                return BadRequest("Invalid request.");
+            }
 
-        //    profesor.Name = request.Name;
-        //    profesor.Lastname = request.Lastname;
-        //    profesor.Email = request.Email;
-        //    profesor.Phone = request.Phone;
-        //    profesor.Gender = request.Gender;
-        //    profesor.Birthdate = request.Birthdate;
-        //    profesor.IsActive = request.IsActive; ;
-        //    _repo.Customers.Update(customerDb);
-        //    await _repo.SaveChangesAsync();
-        //    return NoContent();
-        //    return await _repo.Add(request);
-        //}
+            try
+            {
+                var response = await _repo.Add(request);
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
 
-        //[HttpDelete("DeleteCustomer/{id}")]
-        //public async Task<IActionResult> DeleteCustomer(int id)
-        //{
-        //    var customerDb = await _repo.profesor.FindAsync(id);
-        //    if (customerDb == null)
-        //    {
-        //        return NotFound();
-        //    }
-        //    _context.Customers.Remove(customerDb);
-        //    await _context.SaveChangesAsync();
-        //    return NoContent();
-        //}
+        // Actualizar un profesor existente
+        [HttpPut("UpdateProfesor/{id}")]
+        public async Task<IActionResult> UpdateProfesor(int id, CreateProfesorRequest request)
+        {
+            try
+            {
+                // Llama al método Update del repositorio con los parámetros correctos
+                var updatedProfesor = await _repo.Update(id, request);
+
+                // Retorna el profesor actualizado en la respuesta
+                return Ok(updatedProfesor); // Retorna el objeto actualizado como respuesta
+            }
+            catch (Exception ex)
+            {
+                // Maneja los errores y retorna un mensaje si no se encuentra el profesor
+                return NotFound(ex.Message);
+            }
+        }
+
+
+        // Eliminar un profesor
+        [HttpDelete("DeleteProfesor/{id}")]
+        public async Task<IActionResult> DeleteProfesor(int id)
+        {
+            var profesor = await _repo.Get(id);
+            if (profesor == null)
+            {
+                return NotFound(); // Si no se encuentra el profesor, devuelve NotFound
+            }
+
+            // Eliminar el profesor
+            await _repo.Delete(id);
+
+            return NoContent(); // Retorna 204 No Content indicando que la operación fue exitosa
+        }
     }
 }

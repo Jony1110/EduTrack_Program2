@@ -1,10 +1,21 @@
+using Microsoft.Extensions.Options;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
-//builder.Services.AddDbContext<EduTrackDbContext>(p =>
-//    p.UseSqlServer(builder.Configuration.GetConnectionString("EduTrackStrConnection")));
+// Configuración de CORS
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: "AllowSpecificOrigins",
+        policy =>
+        {
+            policy.WithOrigins("https://localhost:7019") // Frontend URL
+                  .AllowAnyMethod()
+                  .AllowAnyHeader();
+        });
+});
 
 var app = builder.Build();
 
@@ -20,6 +31,10 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+
+// Aplicar la política de CORS antes de la autorización
+
+app.UseCors("AllowSpecificOrigins");
 
 app.UseAuthorization();
 
