@@ -4,33 +4,37 @@
     ViewData["Title"] = "Maestros";
 }
 
-<h1>Lista de Maestros</h1>
+<div class="container py-5">
+    <h1 class="text-center display-6 fw-bold text-primary mb-4">Lista de Maestros</h1>
 
-<p>
-    <a class="btn btn-primary" id="addProfesorButton">Crear Nuevo</a>
-</p>
+    <div class="d-flex justify-content-end mb-3">
+        <a class="btn btn-primary shadow-sm" id="addProfesorButton">
+            <i class="bi bi-plus-circle"></i> Crear Nuevo
+        </a>
+    </div>
 
-<div class="text-center">
-    <table class="table table-bordered">
-        <thead>
-            <tr>
-                <th>@Html.DisplayNameFor(model => model.Id)</th>
-                <th>@Html.DisplayNameFor(model => model.Name)</th>
-                <th>@Html.DisplayNameFor(model => model.Lastname)</th>
-                <th>@Html.DisplayNameFor(model => model.Email)</th>
-                <th>@Html.DisplayNameFor(model => model.Phone)</th>
-                <th>@Html.DisplayNameFor(model => model.Gender)</th>
-                <th>@Html.DisplayNameFor(model => model.Birthdate)</th>
-                <th>@Html.DisplayNameFor(model => model.IsActive)</th>
-                <th>Acciones</th>
-            </tr>
-        </thead>
-        <tbody id="profesoresTableBody">
-            <tr>
-                <td colspan="9">Cargando datos...</td>
-            </tr>
-        </tbody>
-    </table>
+    <div class="table-responsive">
+        <table class="table table-hover align-middle shadow-sm">
+            <thead class="table-primary">
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Apellido</th>
+                    <th>Correo</th>
+                    <th>Teléfono</th>
+                    <th>Género</th>
+                    <th>Fecha de Nacimiento</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody id="profesoresTableBody">
+                <tr>
+                    <td colspan="9" class="text-center">Cargando datos...</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 </div>
 
 @section Scripts {
@@ -45,14 +49,14 @@
 
             // Eliminar registro
             $(document).on('click', '.delete-profesor', function () {
-                var profesorId = $(this).data('id');
+                var profesorId = $(this).data('id'); // Obtiene el ID del profesor desde el atributo data-id
                 if (confirm('¿Estás seguro de que quieres eliminar este profesor?')) {
                     $.ajax({
-                        url: '@Url.Action("Delete", "Profesores")/' + profesorId,
-                        type: 'DELETE',
+                        url: `https://localhost:7008/Profesor/DeleteProfesor/${profesorId}`, // Usa la URL de la API con el ID
+                        type: 'DELETE', // Método HTTP para eliminar
                         success: function () {
                             alert('Profesor eliminado exitosamente');
-                            loadProfesores();
+                            loadProfesores(); // Recarga la lista de profesores
                         },
                         error: function (error) {
                             console.log('Error:', error);
@@ -65,7 +69,7 @@
             // Editar registro
             $(document).on('click', '.edit-profesor', function () {
                 var profesorId = $(this).data('id');
-                window.location.href = '@Url.Action("Edit", "Profesores")/' + profesorId;
+                window.location.href = `@Url.Action("Edit", "Profesores")/${profesorId}`;
             });
         });
 
@@ -77,7 +81,7 @@
                 success: function (data) {
                     var tableBody = '';
                     if (data.length === 0) {
-                        tableBody = '<tr><td colspan="9">No hay registros disponibles</td></tr>';
+                        tableBody = '<tr><td colspan="9" class="text-center">No hay registros disponibles</td></tr>';
                     } else {
                         $.each(data, function (index, profesor) {
                             tableBody += `
@@ -89,10 +93,18 @@
                                     <td>${profesor.phone}</td>
                                     <td>${profesor.gender}</td>
                                     <td>${profesor.birthdate}</td>
-                                    <td>${profesor.isActive ? 'Activo' : 'Inactivo'}</td>
                                     <td>
-                                        <a class="btn btn-warning edit-profesor" data-id="${profesor.id}">Editar</a>
-                                        <button class="btn btn-danger delete-profesor" data-id="${profesor.id}">Eliminar</button>
+                                        <span class="badge ${profesor.isActive ? 'bg-success' : 'bg-secondary'}">
+                                            ${profesor.isActive ? 'Activo' : 'Inactivo'}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <a class="btn btn-sm btn-warning edit-profesor" data-id="${profesor.id}">
+                                            <i class="bi bi-pencil-square"></i> Editar
+                                        </a>
+                                        <button class="btn btn-sm btn-danger delete-profesor" data-id="${profesor.id}">
+                                            <i class="bi bi-trash"></i> Eliminar
+                                        </button>
                                     </td>
                                 </tr>`;
                         });
@@ -101,7 +113,7 @@
                 },
                 error: function (error) {
                     console.log('Error:', error);
-                    $('#profesoresTableBody').html('<tr><td colspan="9">Error al cargar los datos</td></tr>');
+                    $('#profesoresTableBody').html('<tr><td colspan="9" class="text-center">Error al cargar los datos</td></tr>');
                 }
             });
         }

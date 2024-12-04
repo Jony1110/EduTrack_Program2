@@ -34,7 +34,8 @@ namespace EduTrack.Infraestructure.Repositories
                     IsActive = profesorDb.IsActive,
                     Lastname = profesorDb.Lastname,
                     Name = profesorDb.Name,
-                    Phone = profesorDb.Phone
+                    Phone = profesorDb.Phone,
+                    Birthdate = profesorDb.Birthdate
                 });
             }
             return profesores;
@@ -56,7 +57,8 @@ namespace EduTrack.Infraestructure.Repositories
                 IsActive = profesorDb.IsActive,
                 Lastname = profesorDb.Lastname,
                 Name = profesorDb.Name,
-                Phone = profesorDb.Phone
+                Phone = profesorDb.Phone,
+                Birthdate = profesorDb.Birthdate
             };
         }
 
@@ -108,7 +110,8 @@ namespace EduTrack.Infraestructure.Repositories
                 IsActive = profesorDb.IsActive,
                 Lastname = profesorDb.Lastname,
                 Name = profesorDb.Name,
-                Phone = profesorDb.Phone
+                Phone = profesorDb.Phone,
+                Birthdate = profesorDb.Birthdate
             };
         }
 

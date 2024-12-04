@@ -23,8 +23,8 @@ namespace EduTrack.Domain.Entities
         public string Phone { get; set; }
 
         public char Gender { get; set; }
+
         [StringLength(15)]
-        
         public string Birthdate { get; set; }
         public bool IsActive { get; set; } 
         public List<Clase> Clases { get; set; }

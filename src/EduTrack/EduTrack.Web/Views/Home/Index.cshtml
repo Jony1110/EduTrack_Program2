@@ -2,23 +2,56 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome to EduTrack</h1>
+<div class="container py-5">
+    <div class="text-center mb-5">
+        <h1 class="display-4 fw-bold text-primary">Welcome to EduTrack</h1>
+        <p class="lead">
+            ¡Bienvenido a <strong>EduTrack</strong>! Este sistema está diseñado para facilitar el control de asistencia en el entorno educativo.
+            Con <strong>EduTrack</strong>, los profesores podrán gestionar eficientemente la asistencia de sus estudiantes.
+        </p>
+    </div>
 
-    @* <h1>Bienvenido a EduTrack</h1> *@
-    <p>¡Bienvenido a <strong>EduTrack</strong>! Este es un sistema diseñado especialmente para facilitar el control de asistencia en el entorno educativo. Con <strong>EduTrack</strong>, los profesores podrán gestionar de manera eficiente la asistencia de sus estudiantes en sus clases.</p>
-    
-    <h2>¿Qué puedes hacer con EduTrack?</h2>
-    <ul>
-        <li><strong>Registrar Asistencia</strong>: Lleva un registro diario de la asistencia de tus estudiantes de manera rápida y sencilla.</li>
-        <li><strong>Crear Clases</strong>: Organiza y crea clases, asignando estudiantes a cada una para un seguimiento más efectivo.</li>
-        <li><strong>Generar Reportes</strong>: Accede a reportes detallados de asistencia por estudiante o por clase, facilitando la evaluación del rendimiento académico.</li>
-        <li><strong>Gestionar Estudiantes</strong>: Añade y gestiona la información de tus estudiantes en la plataforma, asegurando que cada uno esté correctamente asignado a su clase correspondiente.</li>
-    </ul>
+    <div class="row text-center">
+        <div class="col-md-6 col-lg-3 mb-4">
+            <div class="card shadow-sm border-0">
+                <div class="card-body">
+                    <h5 class="card-title text-primary"><i class="bi bi-check2-circle"></i> Registrar Asistencia</h5>
+                    <p class="card-text">Lleva un registro diario de la asistencia de tus estudiantes de manera rápida y sencilla.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-3 mb-4">
+            <div class="card shadow-sm border-0">
+                <div class="card-body">
+                    <h5 class="card-title text-primary"><i class="bi bi-journal-plus"></i> Crear Clases</h5>
+                    <p class="card-text">Organiza y crea clases, asignando estudiantes para un seguimiento más efectivo.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-3 mb-4">
+            <div class="card shadow-sm border-0">
+                <div class="card-body">
+                    <h5 class="card-title text-primary"><i class="bi bi-file-bar-graph"></i> Generar Reportes</h5>
+                    <p class="card-text">Accede a reportes detallados de asistencia por estudiante o por clase.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-3 mb-4">
+            <div class="card shadow-sm border-0">
+                <div class="card-body">
+                    <h5 class="card-title text-primary"><i class="bi bi-person-badge"></i> Gestionar Estudiantes</h5>
+                    <p class="card-text">Añade y gestiona la información de tus estudiantes en la plataforma.</p>
+                </div>
+            </div>
+        </div>
+    </div>
 
-    <p>Con <strong>EduTrack</strong>, tendrás todas las herramientas necesarias para llevar un control de asistencia preciso y organizado, contribuyendo así a un ambiente educativo más eficiente.</p>
-
-    <p>¡Comienza a explorar <strong>EduTrack</strong> y mejora tu experiencia en la gestión de la asistencia estudiantil!</p>
-
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <div class="text-center mt-5">
+        <p class="fw-light">
+            Con <strong>EduTrack</strong>, tendrás todas las herramientas necesarias para llevar un control de asistencia preciso y organizado, contribuyendo así a un ambiente educativo más eficiente.
+        </p>
+        <a href="https://learn.microsoft.com/aspnet/core" class="btn btn-primary btn-lg shadow-sm">
+            <i class="bi bi-box-arrow-up-right"></i> Aprende más sobre ASP.NET Core
+        </a>
+    </div>
 </div>
