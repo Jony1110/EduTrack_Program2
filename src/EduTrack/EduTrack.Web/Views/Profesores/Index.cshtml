@@ -72,7 +72,7 @@
         // Función para cargar los registros
         function loadProfesores() {
             $.ajax({
-                url: '@Url.Action("GetProfesores", "Profesores")', // Acción que devuelve los profesores
+                url: 'https://localhost:7008/Profesor/GetProfesores', // URL de la API que devuelve los profesores
                 type: 'GET',
                 success: function (data) {
                     var tableBody = '';
