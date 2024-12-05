@@ -43,6 +43,25 @@ namespace EduTrack.Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Estudiantes",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    Lastname = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    Phone = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    Gender = table.Column<string>(type: "nvarchar(1)", nullable: false),
+                    Birthdate = table.Column<string>(type: "nvarchar(15)", maxLength: 15, nullable: false),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Estudiantes", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Clases",
                 columns: table => new
                 {
@@ -77,6 +96,9 @@ namespace EduTrack.Persistence.Migrations
 
             migrationBuilder.DropTable(
                 name: "Clases");
+
+            migrationBuilder.DropTable(
+                name: "Estudiantes");
 
             migrationBuilder.DropTable(
                 name: "Profesores");

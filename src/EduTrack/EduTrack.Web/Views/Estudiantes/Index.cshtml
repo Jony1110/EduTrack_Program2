@@ -1,0 +1,121 @@
+﻿@model IEnumerable<EduTrack.Domain.Entities.Estudiante>
+
+@{
+    ViewData["Title"] = "Estudiantes";
+}
+
+<div class="container py-5">
+    <h1 class="text-center display-6 fw-bold text-primary mb-4">Lista de Estudiantes</h1>
+
+    <div class="d-flex justify-content-end mb-3">
+        <a class="btn btn-primary shadow-sm" id="addEstudianteButton">
+            <i class="bi bi-plus-circle"></i> Crear Nuevo
+        </a>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-hover align-middle shadow-sm">
+            <thead class="table-primary">
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Apellido</th>
+                    <th>Correo</th>
+                    <th>Teléfono</th>
+                    <th>Género</th>
+                    <th>Fecha de Nacimiento</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody id="estudiantesTableBody">
+                <tr>
+                    <td colspan="9" class="text-center">Cargando datos...</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            loadEstudiantes();
+
+            // Crear nuevo registro
+            $('#addEstudianteButton').click(function () {
+                window.location.href = '@Url.Action("Create", "Estudiantes")';
+            });
+
+            // Eliminar registro
+            $(document).on('click', '.delete-estudiante', function () {
+                var estudianteId = $(this).data('id'); // Obtiene el ID del estudiante desde el atributo data-id
+                if (confirm('¿Estás seguro de que quieres eliminar este estudiante?')) {
+                    $.ajax({
+                        url: `https://localhost:7008/Estudinte/DeleteEstudiante/${estudianteId}`, // Usa la URL de la API con el ID
+                        type: 'DELETE', // Método HTTP para eliminar
+                        success: function () {
+                            alert('Estudiante eliminado exitosamente');
+                            loadEstudiantes(); // Recarga la lista de estudiante
+                        },
+                        error: function (error) {
+                            console.log('Error:', error);
+                            alert('No se pudo eliminar el estudiante.');
+                        }
+                    });
+                }
+            });
+
+            // Editar registro
+            $(document).on('click', '.edit-estudiante', function () {
+                var estudianteId = $(this).data('id');
+                window.location.href = `@Url.Action("Edit", "Estudiantes")/${estudianteId}`;
+            });
+        });
+
+        // Función para cargar los registros
+        function loadEstudiantes() {
+            $.ajax({
+                url: 'https://localhost:7008/Estudiante/GetEstudiantes', // URL de la API que devuelve los estudiantes
+                type: 'GET',
+                success: function (data) {
+                    var tableBody = '';
+                    if (data.length === 0) {
+                        tableBody = '<tr><td colspan="9" class="text-center">No hay registros disponibles</td></tr>';
+                    } else {
+                        $.each(data, function (index, estudiante) {
+                            tableBody += `
+                                <tr>
+                                    <td>${estudiante.id}</td>
+                                    <td>${estudiante.name}</td>
+                                    <td>${estudiante.lastname}</td>
+                                    <td>${estudiante.email}</td>
+                                    <td>${estudiante.phone}</td>
+                                    <td>${estudiante.gender}</td>
+                                    <td>${estudiante.birthdate}</td>
+                                    <td>
+                                        <span class="badge ${estudiante.isActive ? 'bg-success' : 'bg-secondary'}">
+                                            ${estudiante.isActive ? 'Activo' : 'Inactivo'}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <a class="btn btn-sm btn-warning edit-estudiante" data-id="${estudiante.id}">
+                                            <i class="bi bi-pencil-square"></i> Editar
+                                        </a>
+                                        <button class="btn btn-sm btn-danger delete-estudiante" data-id="${estudiante.id}">
+                                            <i class="bi bi-trash"></i> Eliminar
+                                        </button>
+                                    </td>
+                                </tr>`;
+                        });
+                    }
+                    $('#estudiantesTableBody').html(tableBody);
+                },
+                error: function (error) {
+                    console.log('Error:', error);
+                    $('#estudiantesTableBody').html('<tr><td colspan="9" class="text-center">Error al cargar los datos</td></tr>');
+                }
+            });
+        }
+    </script>
+}

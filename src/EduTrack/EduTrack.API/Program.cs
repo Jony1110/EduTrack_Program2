@@ -12,6 +12,8 @@ builder.Services.AddDbContext<EduTrackDbContext>(p =>
 
 builder.Services.AddTransient<ProfesorRepository>();
 
+builder.Services.AddTransient<EstudianteRepository>();
+
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

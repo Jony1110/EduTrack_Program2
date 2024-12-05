@@ -5,11 +5,20 @@
 }
 
 <div class="container py-5">
-    <h1 class="text-center display-6 fw-bold text-primary mb-4">Lista de Maestros</h1>
+    <!-- Branding o título principal -->
+    <div class="text-center mb-4">
+        <h1 class="display-6 fw-bold text-primary">Listado de Profesores</h1>
+        <p class="text-muted">Gestiona y administra la información de los profesores registrados.</p>
+    </div>
 
+    <!-- Botones de acciones -->
     <div class="d-flex justify-content-end mb-3">
-        <a class="btn btn-primary shadow-sm" id="addProfesorButton">
-            <i class="bi bi-plus-circle"></i> Crear Nuevo
+        <a class="btn btn-primary shadow-sm me-2" id="addProfesorButton">
+            <i class="bi bi-plus-circle"></i> Crear Nuevo Maestro
+        </a>
+        <!-- Nuevo botón para redirigir a la creación de estudiantes -->
+        <a class="btn btn-secondary shadow-sm" id="createEstudianteButton">
+            <i class="bi bi-plus-circle"></i> Crear Nuevo Estudiante
         </a>
     </div>
 
@@ -45,6 +54,11 @@
             // Crear nuevo registro
             $('#addProfesorButton').click(function () {
                 window.location.href = '@Url.Action("Create", "Profesores")';
+            });
+
+            // Crear nuevo estudiante
+            $('#createEstudianteButton').click(function () {
+                window.location.href = '@Url.Action("Create", "Estudiantes")';
             });
 
             // Eliminar registro

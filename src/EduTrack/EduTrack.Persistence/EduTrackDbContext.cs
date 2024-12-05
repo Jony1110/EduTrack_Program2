@@ -13,5 +13,6 @@ namespace EduTrack.Persistence
         public DbSet<Profesor> Profesores { get; set; }
         public DbSet<Clase> Clases { get; set; }
         public DbSet<ClaseDetalle> ClaseDetalles { get; set; }
+        public DbSet<Estudiante> Estudiantes { get; set; }
     }
 }

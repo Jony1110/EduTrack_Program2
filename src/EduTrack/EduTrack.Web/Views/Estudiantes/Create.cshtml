@@ -1,0 +1,107 @@
+﻿@model CreateEstudianteViewModel
+
+@{
+    ViewData["Title"] = "Crear Estudiante";
+}
+
+<div class="container py-5">
+    <h1 class="text-center display-6 fw-bold text-primary mb-4">Crear Estudiante</h1>
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-5">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <form>
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                        <div class="mb-3">
+                            <label asp-for="Name" class="form-label fw-bold">Nombre</label>
+                            <input asp-for="Name" class="form-control" />
+                            <span asp-validation-for="Name" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Lastname" class="form-label fw-bold">Apellido</label>
+                            <input asp-for="Lastname" class="form-control" />
+                            <span asp-validation-for="Lastname" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Email" class="form-label fw-bold">Correo Electrónico</label>
+                            <input asp-for="Email" class="form-control" />
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Phone" class="form-label fw-bold">Teléfono</label>
+                            <input asp-for="Phone" class="form-control" />
+                            <span asp-validation-for="Phone" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Gender" class="form-label fw-bold">Género</label>
+                            <select asp-for="Gender" class="form-select">
+                                <option value="M">Masculino</option>
+                                <option value="F">Femenino</option>
+                                <option value="O">Otro</option>
+                            </select>
+                            <span asp-validation-for="Gender" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Birthdate" class="form-label fw-bold">Fecha de Nacimiento</label>
+                            <input asp-for="Birthdate" class="form-control" type="date" />
+                            <span asp-validation-for="Birthdate" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" asp-for="IsActive" />
+                            <label class="form-check-label fw-bold">Activo</label>
+                        </div>
+
+                        <div class="d-flex justify-content-between">
+                            <button type="button" id="saveEstudiante" class="btn btn-primary shadow-sm">
+                                <i class="bi bi-save"></i> Guardar
+                            </button>
+                            <a asp-action="Index" class="btn btn-outline-secondary shadow-sm">
+                                <i class="bi bi-arrow-left"></i> Volver a la Lista
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#saveEstudiante').click(function () {
+                const estudianteData = {
+                    Name: $('#Name').val(),
+                    Lastname: $('#Lastname').val(),
+                    Email: $('#Email').val(),
+                    Phone: $('#Phone').val(),
+                    Gender: $('#Gender').val(),
+                    Birthdate: $('#Birthdate').val(),
+                    IsActive: $('#IsActive').prop('checked')
+                };
+
+                $.ajax({
+                    url: 'https://localhost:7008/Estudiante/AddEstudiante',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(estudianteData),
+                    success: function (response) {
+                        alert('¡Estudiante agregado exitosamente!');
+                        window.location.href = '/Estudiantes/Index'; // Redirigir a la página de lista
+                    },
+                    error: function (error) {
+                        console.error('Error:', error);
+                        alert('Ocurrió un error al agregar el estudiante.');
+                    }
+                });
+            });
+        });
+    </script>
+}
