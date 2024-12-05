@@ -78,8 +78,32 @@
 @section Scripts {
     <script>
         $(document).ready(function () {
+            // Captura el ID del profesor desde la URL
+            const profesorId = @Html.Raw(Json.Serialize(ViewData["ProfesorId"]));
+
+            // GET: Cargar datos del profesor desde la API al abrir la página
+            $.ajax({
+                url: `https://localhost:7008/Profesor/GetProfesor/${profesorId}`,
+                type: 'GET',
+                success: function (data) {
+                    // Rellena los campos del formulario con los datos del profesor
+                    $('#Id').val(data.id);
+                    $('#Name').val(data.name);
+                    $('#Lastname').val(data.lastname);
+                    $('#Email').val(data.email);
+                    $('#Phone').val(data.phone);
+                    $('#Gender').val(data.gender);
+                    $('#Birthdate').val(data.birthdate.split('T')[0]); // Asegura formato yyyy-MM-dd
+                    $('#IsActive').prop('checked', data.isActive);
+                },
+                error: function (error) {
+                    console.error('Error al obtener los datos del profesor:', error);
+                    alert('No se pudo cargar la información del profesor.');
+                }
+            });
+
+            // PUT: Enviar datos actualizados a la API al guardar cambios
             $('#saveProfesor').click(function () {
-                const profesorId = $('#Id').val(); // Captura el ID del campo oculto
                 const profesorData = {
                     Name: $('#Name').val(),
                     Lastname: $('#Lastname').val(),
@@ -91,8 +115,8 @@
                 };
 
                 $.ajax({
-                    url: `https://localhost:7008/Profesor/UpdateProfesor/${profesorId}`, // Construye el URL dinámicamente con el ID
-                    type: 'PUT', // Usamos PUT para actualizaciones
+                    url: `https://localhost:7008/Profesor/UpdateProfesor/${profesorId}`,
+                    type: 'PUT',
                     contentType: 'application/json',
                     data: JSON.stringify(profesorData),
                     success: function (response) {
@@ -100,7 +124,7 @@
                         window.location.href = '/Profesores/Index'; // Redirige a la lista de profesores
                     },
                     error: function (error) {
-                        console.error('Error:', error);
+                        console.error('Error al actualizar el profesor:', error);
                         alert('Ocurrió un error al actualizar el profesor.');
                     }
                 });
@@ -108,4 +132,5 @@
         });
     </script>
 }
+
 

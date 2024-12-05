@@ -30,7 +30,7 @@ namespace EduTrack.Web.Controllers
        // GET: Profesores/Edit/5
         public async Task<IActionResult> Edit(int id)
         {
-
+            ViewData["ProfesorId"] = id; // Pasa el ID a la vista
             return View();
         }
 
