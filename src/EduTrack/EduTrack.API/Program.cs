@@ -8,11 +8,16 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 builder.Services.AddDbContext<EduTrackDbContext>(p =>
-    p.UseSqlServer(builder.Configuration.GetConnectionString("EduTrackStrConnection")));
+    p.UseSqlServer(builder.Configuration.GetConnectionString("EduTrackStrConnection"))
+     .LogTo(Console.WriteLine, LogLevel.Information) // Agrega el logging de consultas aquí
+     .EnableSensitiveDataLogging() // Habilita el registro de datos sensibles (opcional para depuración)
+);
 
 builder.Services.AddTransient<ProfesorRepository>();
 
 builder.Services.AddTransient<EstudianteRepository>();
+
+builder.Services.AddTransient<ClaseRepository>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

@@ -14,9 +14,9 @@ namespace EduTrack.Infraestructure.Repositories
     {
         //Firma
 
-        Task<List<ProfesorDto>> GetAll();
-        Task<ProfesorDto> Get(int id);
-        Task<CreateProfesorResponse> Add(CreateProfesorRequest request);
+        Task<List<EstudianteDto>> GetAll();
+        Task<EstudianteDto> Get(int id);
+        Task<CreateEstudianteResponse> Add(CreateEstudianteRequest request);
         
     }
 }
