@@ -32,7 +32,10 @@ namespace EduTrack.Infraestructure.Repositories
                     NameClass = claseDb.NameClass,
                     Schedule = claseDb.Schedule,
                     ProfesorId = claseDb.ProfesorId,
-                    ProfesorName = $"{claseDb.Profesor.Name} {claseDb.Profesor.Lastname}"
+                    ProfesorName = claseDb.Profesor != null
+    ? $"{claseDb.Profesor.Name} {claseDb.Profesor.Lastname}"
+    : "No asignado"
+
                 });
             }
             return clases;
@@ -54,7 +57,10 @@ namespace EduTrack.Infraestructure.Repositories
                 NameClass = claseDb.NameClass,
                 Schedule = claseDb.Schedule,
                 ProfesorId = claseDb.ProfesorId,
-                ProfesorName = $"{claseDb.Profesor.Name} {claseDb.Profesor.Lastname}"
+                ProfesorName = claseDb.Profesor != null
+    ? $"{claseDb.Profesor.Name} {claseDb.Profesor.Lastname}"
+    : "No asignado"
+
             };
         }
 
