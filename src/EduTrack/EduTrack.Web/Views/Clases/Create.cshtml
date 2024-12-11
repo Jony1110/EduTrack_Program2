@@ -1,0 +1,96 @@
+﻿@model CreateClaseViewModel
+
+@{
+    ViewData["Title"] = "Crear Clase";
+}
+
+<div class="container py-5">
+    <h1 class="text-center display-6 fw-bold text-primary mb-4">Crear Clase</h1>
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-5">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <form id="createClaseForm">
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                        <div class="mb-3">
+                            <label asp-for="NameClass" class="form-label fw-bold">Nombre de la Clase</label>
+                            <input asp-for="NameClass" class="form-control" id="NameClass" />
+                            <span asp-validation-for="NameClass" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Schedule" class="form-label fw-bold">Horario</label>
+                            <input asp-for="Schedule" class="form-control" id="Schedule" />
+                            <span asp-validation-for="Schedule" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="ProfesorId" class="form-label fw-bold">Profesor</label>
+                            <select asp-for="ProfesorId" class="form-select" id="ProfesorId">
+                                <option value="" selected disabled>Seleccionar Profesor</option>
+                            </select>
+                            <span asp-validation-for="ProfesorId" class="text-danger"></span>
+                        </div>
+
+                        <div class="d-flex justify-content-between">
+                            <button type="button" id="saveClase" class="btn btn-primary shadow-sm">
+                                <i class="bi bi-save"></i> Guardar
+                            </button>
+                            <a asp-action="Index" class="btn btn-outline-secondary shadow-sm">
+                                <i class="bi bi-arrow-left"></i> Volver a la Lista
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            // GET: Cargar lista de profesores para la selección
+            $.ajax({
+                url: 'https://localhost:7008/Profesor/GetProfesores', // API para obtener profesores
+                type: 'GET',
+                success: function (data) {
+                    let options = '<option value="" selected disabled>Seleccionar Profesor</option>';
+                    $.each(data, function (index, profesor) {
+                        options += `<option value="${profesor.id}">${profesor.name} ${profesor.lastname}</option>`;
+                    });
+                    $('#ProfesorId').html(options);
+                },
+                error: function (error) {
+                    console.error('Error al cargar la lista de profesores:', error);
+                    alert('No se pudo cargar la lista de profesores.');
+                }
+            });
+
+            // POST: Enviar datos de la nueva clase
+            $('#saveClase').click(function () {
+                const claseData = {
+                    NameClass: $('#NameClass').val(),
+                    Schedule: $('#Schedule').val(),
+                    ProfesorId: $('#ProfesorId').val()
+                };
+
+                $.ajax({
+                    url: 'https://localhost:7008/Clase/AddClase', // API para crear una clase
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(claseData),
+                    success: function (response) {
+                        alert('¡Clase agregada exitosamente!');
+                        window.location.href = '/Clases/Index'; // Redirigir a la lista de clases
+                    },
+                    error: function (error) {
+                        console.error('Error:', error);
+                        alert('Ocurrió un error al agregar la clase.');
+                    }
+                });
+            });
+        });
+    </script>
+}

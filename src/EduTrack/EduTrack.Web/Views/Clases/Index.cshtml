@@ -1,0 +1,129 @@
+﻿@model IEnumerable<EduTrack.Domain.Entities.Clase>
+
+@{
+    ViewData["Title"] = "Clases";
+}
+
+<div class="container py-5">
+    <h1 class="text-center display-6 fw-bold text-primary mb-4">Lista de Clases</h1>
+
+    <!-- Contenedor de la alerta -->
+    <div id="clasesSinMaestroAlert" class="alert alert-warning d-none">
+        <strong>Advertencia:</strong> Hay clases sin maestro asignado. Por favor, verifica.
+    </div>
+
+    <div class="d-flex justify-content-end mb-3">
+        <a class="btn btn-primary shadow-sm" id="addClaseButton">
+            <i class="bi bi-plus-circle"></i> Crear Nueva Clase
+        </a>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-hover align-middle shadow-sm">
+            <thead class="table-primary">
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre de la Clase</th>
+                    <th>Horario</th>
+                    <th>Profesor</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody id="clasesTableBody">
+                <tr>
+                    <td colspan="5" class="text-center">Cargando datos...</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            loadClases();
+
+            // Crear nueva clase
+            $('#addClaseButton').click(function () {
+                window.location.href = '@Url.Action("Create", "Clases")';
+            });
+
+            // Eliminar clase
+            $(document).on('click', '.delete-clase', function () {
+                var claseId = $(this).data('id');
+                if (confirm('¿Estás seguro de que quieres eliminar esta clase?')) {
+                    $.ajax({
+                        url: `https://localhost:7008/Clase/DeleteClase/${claseId}`, // URL de la API
+                        type: 'DELETE',
+                        success: function () {
+                            alert('Clase eliminada exitosamente');
+                            loadClases(); // Recarga la lista de clases
+                        },
+                        error: function (error) {
+                            console.log('Error:', error);
+                            alert('No se pudo eliminar la clase.');
+                        }
+                    });
+                }
+            });
+
+            // Editar clase
+            $(document).on('click', '.edit-clase', function () {
+                var claseId = $(this).data('id');
+                window.location.href = `@Url.Action("Edit", "Clases")/${claseId}`;
+            });
+        });
+
+        // Función para cargar las clases
+        function loadClases() {
+            $.ajax({
+                url: 'https://localhost:7008/Clase/GetClases', // URL de la API que devuelve las clases
+                type: 'GET',
+                success: function (data) {
+                    var tableBody = '';
+                    var clasesSinMaestro = 0; // Contador de clases sin maestro
+
+                    if (data.length === 0) {
+                        tableBody = '<tr><td colspan="5" class="text-center">No hay registros disponibles</td></tr>';
+                    } else {
+                        $.each(data, function (index, clase) {
+                            // Verificar si la clase no tiene profesor asignado
+                            if (!clase.profesorName || clase.profesorName === "No asignado") {
+                                clasesSinMaestro++;
+                            }
+
+                            tableBody += `
+                                <tr>
+                                    <td>${clase.id}</td>
+                                    <td>${clase.nameClass}</td>
+                                    <td>${clase.schedule}</td>
+                                    <td>${clase.profesorName || "No asignado"}</td>
+                                    <td>
+                                        <a class="btn btn-sm btn-warning edit-clase" data-id="${clase.id}">
+                                            <i class="bi bi-pencil-square"></i> Editar
+                                        </a>
+                                        <button class="btn btn-sm btn-danger delete-clase" data-id="${clase.id}">
+                                            <i class="bi bi-trash"></i> Eliminar
+                                        </button>
+                                    </td>
+                                </tr>`;
+                        });
+                    }
+
+                    // Mostrar u ocultar la alerta según el resultado
+                    if (clasesSinMaestro > 0) {
+                        $('#clasesSinMaestroAlert').removeClass('d-none');
+                    } else {
+                        $('#clasesSinMaestroAlert').addClass('d-none');
+                    }
+
+                    $('#clasesTableBody').html(tableBody);
+                },
+                error: function (error) {
+                    console.log('Error:', error);
+                    $('#clasesTableBody').html('<tr><td colspan="5" class="text-center">Error al cargar los datos</td></tr>');
+                }
+            });
+        }
+    </script>
+}

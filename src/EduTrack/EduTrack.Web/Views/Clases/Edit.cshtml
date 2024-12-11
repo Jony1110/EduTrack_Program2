@@ -1,0 +1,118 @@
+﻿@model EduTrack.Domain.ViewModels.EditClaseViewModel
+
+@{
+    ViewData["Title"] = "Editar Clase";
+}
+
+<div class="container py-5">
+    <h1 class="text-center display-6 fw-bold text-primary mb-4">Editar Clase</h1>
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-5">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <form id="editClaseForm">
+                        <input type="hidden" asp-for="Id" id="Id" />
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                        <div class="mb-3">
+                            <label asp-for="NameClass" class="form-label fw-bold">Nombre de la Clase</label>
+                            <input asp-for="NameClass" class="form-control" id="NameClass" />
+                            <span asp-validation-for="NameClass" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Schedule" class="form-label fw-bold">Horario</label>
+                            <input asp-for="Schedule" class="form-control" id="Schedule" />
+                            <span asp-validation-for="Schedule" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="ProfesorId" class="form-label fw-bold">Profesor</label>
+                            <select asp-for="ProfesorId" class="form-select" id="ProfesorId">
+                                <option value="" selected disabled>Seleccionar Profesor</option>
+                            </select>
+                            <span asp-validation-for="ProfesorId" class="text-danger"></span>
+                        </div>
+
+                        <div class="d-flex justify-content-between">
+                            <button type="button" id="saveClase" class="btn btn-primary shadow-sm">
+                                <i class="bi bi-save"></i> Guardar Cambios
+                            </button>
+                            <a asp-action="Index" class="btn btn-outline-secondary shadow-sm">
+                                <i class="bi bi-arrow-left"></i> Volver a la Lista
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            // Captura el ID de la clase desde la URL o ViewData
+            const claseId = @Html.Raw(Json.Serialize(ViewData["ClaseId"]));
+
+            // GET: Cargar datos de la clase desde la API
+            $.ajax({
+                url: `https://localhost:7008/Clase/GetClase/${claseId}`,
+                type: 'GET',
+                success: function (data) {
+                    // Rellena los campos del formulario con los datos de la clase
+                    $('#Id').val(data.id);
+                    $('#NameClass').val(data.nameClass);
+                    $('#Schedule').val(data.schedule);
+                    $('#ProfesorId').val(data.profesorId);
+                },
+                error: function (error) {
+                    console.error('Error al obtener los datos de la clase:', error);
+                    alert('No se pudo cargar la información de la clase.');
+                }
+            });
+
+            // GET: Cargar lista de profesores
+            $.ajax({
+                url: 'https://localhost:7008/Profesor/GetProfesores',
+                type: 'GET',
+                success: function (data) {
+                    let options = '<option value="" selected disabled>Seleccionar Profesor</option>';
+                    $.each(data, function (index, profesor) {
+                        options += `<option value="${profesor.id}">${profesor.name} ${profesor.lastname}</option>`;
+                    });
+                    $('#ProfesorId').html(options);
+                },
+                error: function (error) {
+                    console.error('Error al cargar la lista de profesores:', error);
+                    alert('No se pudo cargar la lista de profesores.');
+                }
+            });
+
+            // PUT: Enviar datos actualizados a la API
+            $('#saveClase').click(function () {
+                const claseData = {
+                    Id: $('#Id').val(),
+                    NameClass: $('#NameClass').val(),
+                    Schedule: $('#Schedule').val(),
+                    ProfesorId: $('#ProfesorId').val()
+                };
+
+                $.ajax({
+                    url: `https://localhost:7008/Clase/UpdateClase/${claseId}`,
+                    type: 'PUT',
+                    contentType: 'application/json',
+                    data: JSON.stringify(claseData),
+                    success: function (response) {
+                        alert('¡Clase actualizada exitosamente!');
+                        window.location.href = '/Clases/Index';
+                    },
+                    error: function (error) {
+                        console.error('Error al actualizar la clase:', error);
+                        alert('Ocurrió un error al actualizar la clase.');
+                    }
+                });
+            });
+        });
+    </script>
+}

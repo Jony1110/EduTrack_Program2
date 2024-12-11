@@ -27,7 +27,7 @@ namespace EduTrack.Domain.Entities
         [StringLength(15)]
         public string Birthdate { get; set; }
         public bool IsActive { get; set; } 
-        public List<Clase> Clases { get; set; }
+      
 
 
     }

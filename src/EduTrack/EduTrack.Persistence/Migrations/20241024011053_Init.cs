@@ -62,30 +62,31 @@ namespace EduTrack.Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Clases",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    NameClass = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    ProfesorId = table.Column<int>(type: "int", nullable: false),
-                    Schedule = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Clases", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Clases_Profesores_ProfesorId",
-                        column: x => x.ProfesorId,
-                        principalTable: "Profesores",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
+    name: "Clases",
+    columns: table => new
+    {
+        Id = table.Column<int>(type: "int", nullable: false)
+            .Annotation("SqlServer:Identity", "1, 1"),
+        NameClass = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+        ProfesorId = table.Column<int>(type: "int", nullable: true), // Cambiar a nullable
+        Schedule = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false)
+    },
+    constraints: table =>
+    {
+        table.PrimaryKey("PK_Clases", x => x.Id);
+        table.ForeignKey(
+            name: "FK_Clases_Profesores_ProfesorId",
+            column: x => x.ProfesorId,
+            principalTable: "Profesores",
+            principalColumn: "Id",
+            onDelete: ReferentialAction.SetNull); // Cambiar a SetNull
+    });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Clases_ProfesorId",
                 table: "Clases",
                 column: "ProfesorId");
+
         }
 
         /// <inheritdoc />

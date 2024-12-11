@@ -15,15 +15,15 @@ namespace EduTrack.Persistence
         public DbSet<ClaseDetalle> ClaseDetalles { get; set; }
         public DbSet<Estudiante> Estudiantes { get; set; }
 
-        // Configuración de relaciones y reglas
+        //Configuración de relaciones y reglas
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Clase>()
-            .HasOne(c => c.Profesor)
-            .WithMany(p => p.Clases)
-            .HasForeignKey(c => c.ProfesorId)
-            .OnDelete(DeleteBehavior.Cascade);
-
+                .HasOne(c => c.Profesor)
+                .WithMany(p => p.Clases)
+                .HasForeignKey(c => c.ProfesorId)
+                .OnDelete(DeleteBehavior.SetNull); // Cambiar a SetNull
         }
+
     }
 }
