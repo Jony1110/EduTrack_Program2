@@ -8,6 +8,7 @@ namespace EduTrack.API.Dtos
         public string NameClass { get; set; }
         public string Schedule { get; set; }
         public int ProfesorId { get; set; }
+        public int ClaseId { get; set; }
     }
 
 }

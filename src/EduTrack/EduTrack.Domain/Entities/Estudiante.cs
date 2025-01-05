@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace EduTrack.Domain.Entities
 {
-    public class Estudiante: BaseEntity
+    public class Estudiante : BaseEntity
     {
         //[Key]
         //public int Id { get; set; }
@@ -26,8 +26,11 @@ namespace EduTrack.Domain.Entities
 
         [StringLength(15)]
         public string Birthdate { get; set; }
-        public bool IsActive { get; set; } 
-      
+        public bool IsActive { get; set; }
+        //public List<Asistencia> Asistencias { get; set; }
+        public List<Asistencia> Asistencias { get; set; }
+
+
 
 
     }

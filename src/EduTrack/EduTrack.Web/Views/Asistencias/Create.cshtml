@@ -1,0 +1,135 @@
+﻿@model CreateAsistenciaViewModel
+
+@{
+    ViewData["Title"] = "Registrar Asistencia";
+}
+
+<div class="container py-5">
+    <h1 class="text-center display-6 fw-bold text-primary mb-4">Registrar Asistencia</h1>
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-5">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <form id="createAsistenciaForm">
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                        <div class="mb-3">
+                            <label asp-for="Id_Clase" class="form-label fw-bold">Clase</label>
+                            <select asp-for="Id_Clase" class="form-select" id="Id_Clase">
+                                <option value="" selected disabled>Seleccionar Clase</option>
+                            </select>
+                            <span asp-validation-for="Id_Clase" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Id_Estudiante" class="form-label fw-bold">Estudiante</label>
+                            <select asp-for="Id_Estudiante" class="form-select" id="Id_Estudiante">
+                                <option value="" selected disabled>Seleccionar Estudiante</option>
+                            </select>
+                            <span asp-validation-for="Id_Estudiante" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Fecha" class="form-label fw-bold">Fecha</label>
+                            <input asp-for="Fecha" class="form-control" id="Fecha" type="date" />
+                            <span asp-validation-for="Fecha" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Estado" class="form-label fw-bold">Estado</label>
+                            <select asp-for="Estado" class="form-select" id="Estado">
+                                <option value="Presente">Presente</option>
+                                <option value="Ausente">Ausente</option>
+                                <option value="Tarde">Tarde</option>
+                            </select>
+                            <span asp-validation-for="Estado" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Nota" class="form-label fw-bold">Nota</label>
+                            <textarea asp-for="Nota" class="form-control" id="Nota" rows="3"></textarea>
+                            <span asp-validation-for="Nota" class="text-danger"></span>
+                        </div>
+
+                        <div class="d-flex justify-content-between">
+                            <button type="button" id="saveAsistencia" class="btn btn-primary shadow-sm">
+                                <i class="bi bi-save"></i> Guardar
+                            </button>
+                            <a asp-action="Index" class="btn btn-outline-secondary shadow-sm">
+                                <i class="bi bi-arrow-left"></i> Volver a la Lista
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            // Cargar lista de clases
+            $.ajax({
+                url: 'https://localhost:7008/Clase/GetClases',
+                type: 'GET',
+                success: function (data) {
+                    let options = '<option value="" selected disabled>Seleccionar Clase</option>';
+                    $.each(data, function (index, clase) {
+                        options += `<option value="${clase.id}">${clase.nameClass}</option>`;
+                    });
+                    $('#Id_Clase').html(options);
+                },
+                error: function (error) {
+                    console.error('Error al cargar las clases:', error);
+                    alert('No se pudo cargar la lista de clases.');
+                }
+            });
+
+            // Cargar lista de estudiantes
+            $.ajax({
+                url: 'https://localhost:7008/Estudiante/GetEstudiantes',
+                type: 'GET',
+                success: function (data) {
+                    let options = '<option value="" selected disabled>Seleccionar Estudiante</option>';
+                    $.each(data, function (index, estudiante) {
+                        if (estudiante.isActive) {
+                            options += `<option value="${estudiante.id}">${estudiante.name} ${estudiante.lastname}</option>`;
+                        }
+                    });
+                    $('#Id_Estudiante').html(options);
+                },
+                error: function (error) {
+                    console.error('Error al cargar los estudiantes:', error);
+                    alert('No se pudo cargar la lista de estudiantes.');
+                }
+            });
+
+            // Registrar nueva asistencia
+            $('#saveAsistencia').click(function () {
+                const asistenciaData = {
+                    Id_Clase: $('#Id_Clase').val(),
+                    Id_Estudiante: $('#Id_Estudiante').val(),
+                    Fecha: $('#Fecha').val(),
+                    Estado: $('#Estado').val(),
+                    Nota: $('#Nota').val()
+                };
+
+                $.ajax({
+                    url: 'https://localhost:7008/Asistencia/AddOrUpdateAsistencias',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify([asistenciaData]),
+                    success: function () {
+                        alert('¡Asistencia registrada exitosamente!');
+                        window.location.href = '/Asistencias/Index';
+                    },
+                    error: function (error) {
+                        console.error('Error:', error);
+                        alert('Ocurrió un error al registrar la asistencia.');
+                    }
+                });
+            });
+        });
+    </script>
+}

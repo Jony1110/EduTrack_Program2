@@ -2,12 +2,10 @@
 
 namespace EduTrack.Domain.ViewModels
 {
-    public class DeleteClaseDto
+    public class AsignarProfesorAClaseViewModel
     {
-        public string NameClass { get; set; }
-
-        public string Schedule { get; set; }
-
+        public int ClaseId { get; set; }
         public int ProfesorId { get; set; }
     }
+
 }

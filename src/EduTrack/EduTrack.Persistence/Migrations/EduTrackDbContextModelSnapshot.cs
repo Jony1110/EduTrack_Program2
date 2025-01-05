@@ -156,6 +156,90 @@ namespace EduTrack.Persistence.Migrations
                 b.ToTable("Estudiantes");
             });
 
+            modelBuilder.Entity("EduTrack.Persistence.Entities.Asistencia", b =>
+            {
+                b.Property<int>("Id_Asistencia")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("int");
+
+                SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id_Asistencia"));
+
+                b.Property<int>("Id_Clase")
+                    .HasColumnType("int");
+
+                b.Property<int>("Id_Estudiante")
+                    .HasColumnType("int");
+
+                b.Property<string>("Fecha")
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .HasColumnType("nvarchar(50)");
+
+                b.Property<string>("Estado")
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .HasColumnType("nvarchar(50)");
+
+                b.Property<string>("Nota")
+                    .HasMaxLength(255)
+                    .HasColumnType("nvarchar(255)");
+
+                b.HasKey("Id_Asistencia");
+
+                b.HasIndex("Id_Clase");
+
+                b.HasIndex("Id_Estudiante");
+
+                b.ToTable("Asistencias");
+            });
+
+            modelBuilder.Entity("EduTrack.Persistence.Entities.Usuario", b =>
+            {
+                b.Property<int>("Id")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("int");
+
+                b.Property<string>("Matricula")
+                    .HasMaxLength(20)
+                    .HasColumnType("nvarchar(20)");
+
+                b.Property<string>("Nombre")
+                    .IsRequired()
+                    .HasMaxLength(100)
+                    .HasColumnType("nvarchar(100)");
+
+                b.Property<string>("Correo")
+                    .IsRequired()
+                    .HasMaxLength(100)
+                    .HasColumnType("nvarchar(100)");
+
+                b.Property<string>("Contraseña")
+                    .IsRequired()
+                    .HasMaxLength(255)
+                    .HasColumnType("nvarchar(255)");
+
+                b.Property<string>("Rol")
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .HasColumnType("nvarchar(50)");
+
+                b.Property<string>("FechaRegistro")
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .HasColumnType("nvarchar(50)");
+
+                b.Property<bool>("Activo")
+                    .HasColumnType("bit");
+
+                b.HasKey("Id");
+
+                b.HasIndex("Correo").IsUnique();
+                b.HasIndex("Nombre").IsUnique();
+                b.HasIndex("Matricula").IsUnique();
+
+                b.ToTable("Usuarios");
+            });
+
             modelBuilder.Entity("EduTrack.Persistence.Entities.Clase", b =>
             {
                 b.HasOne("EduTrack.Persistence.Entities.Profesor", "Profesor")
@@ -167,9 +251,38 @@ namespace EduTrack.Persistence.Migrations
                 b.Navigation("Profesor");
             });
 
+            modelBuilder.Entity("EduTrack.Persistence.Entities.Asistencia", b =>
+            {
+                b.HasOne("EduTrack.Persistence.Entities.Clase", "Clase")
+                    .WithMany("Asistencias")
+                    .HasForeignKey("Id_Clase")
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .IsRequired();
+
+                b.HasOne("EduTrack.Persistence.Entities.Estudiante", "Estudiante")
+                    .WithMany("Asistencias")
+                    .HasForeignKey("Id_Estudiante")
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .IsRequired();
+
+                b.Navigation("Clase");
+
+                b.Navigation("Estudiante");
+            });
+
             modelBuilder.Entity("EduTrack.Persistence.Entities.Profesor", b =>
             {
                 b.Navigation("Clases");
+            });
+
+            modelBuilder.Entity("EduTrack.Persistence.Entities.Clase", b =>
+            {
+                b.Navigation("Asistencias");
+            });
+
+            modelBuilder.Entity("EduTrack.Persistence.Entities.Estudiante", b =>
+            {
+                b.Navigation("Asistencias");
             });
 #pragma warning restore 612, 618
         }

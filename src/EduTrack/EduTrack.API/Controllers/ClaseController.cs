@@ -1,4 +1,5 @@
 ﻿using EduTrack.API.Dtos;
+//using EduTrack.Common.Requests;
 using EduTrack.Domain.ViewModels;
 using EduTrack.Infraestructure.Repositories;
 using Microsoft.AspNetCore.Mvc;
@@ -20,24 +21,43 @@ namespace EduTrack.API.Controllers
         [HttpGet("GetClase/{id}")]
         public async Task<ActionResult<ClaseDto>> GetClase(int id)
         {
-            var clase = await _repo.Get(id);
-            if (clase == null)
+            try
             {
-                return NotFound($"No se encontró una clase con el ID {id}.");
-            }
+                var clase = await _repo.Get(id);
+                if (clase == null)
+                {
+                    return NotFound($"No se encontró una clase con el ID {id}.");
+                }
 
-            return clase;
+                return Ok(clase);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
         }
 
         // Obtener todas clases
         [HttpGet(nameof(GetClases))]
         public async Task<ActionResult<List<ClaseDto>>> GetClases()
         {
-            var clases = await _repo.GetAll();
-            return clases;
+            try
+            {
+                var clases = await _repo.GetAll();
+                if (clases == null || !clases.Any())
+                {
+                    return NotFound("No se encontraron clases.");
+                }
+
+                return Ok(clases);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
         }
 
-        
+
         // Método POST para agregar una clase
         [HttpPost(nameof(AddClase))]
         public async Task<ActionResult<CreateClaseResponse>> AddClase([FromBody] CreateClaseRequest request)
@@ -85,12 +105,54 @@ namespace EduTrack.API.Controllers
             var clase = await _repo.Get(id);
             if (clase == null)
             {
-                return NotFound(); 
+                return NotFound();
             }
 
             await _repo.Delete(id);
 
             return NoContent(); // Retorna 204 No Content indicando que la operación fue exitosa
         }
+
+        //[HttpPost("AsignarProfesorAClase")]
+        //public async Task<IActionResult> AsignarProfesorAClase([FromBody] CreateClaseRequest request)
+        //{
+        //    try
+        //    {
+        //        // Validar que los IDs no sean nulos o cero
+        //        if (request.ClaseId <= 0 || request.ProfesorId <= 0)
+        //        {
+        //            return BadRequest("Los IDs de Clase y Profesor deben ser válidos.");
+        //        }
+
+        //        await _repo.AsignarProfesorAClase(request.ClaseId, request.ProfesorId);
+        //        return Ok("Profesor asignado correctamente.");
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return StatusCode(500, $"Error al asignar profesor: {ex.Message}");
+        //    }
+        //}
+
+        [HttpPost("AsignarProfesorAClase")]
+        public async Task<IActionResult> AsignarProfesorAClase([FromBody] AsignarProfesorRequest request)
+        {
+            try
+            {
+                // Validar que los IDs no sean nulos o cero
+                if (request.ClaseId <= 0 || request.ProfesorId <= 0)
+                {
+                    return BadRequest("Los IDs de Clase y Profesor deben ser válidos.");
+                }
+
+                await _repo.AsignarProfesorAClase(request.ClaseId, request.ProfesorId);
+                return Ok("Profesor asignado correctamente.");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Error al asignar profesor: {ex.Message}");
+            }
+        }
+
+
     }
 }

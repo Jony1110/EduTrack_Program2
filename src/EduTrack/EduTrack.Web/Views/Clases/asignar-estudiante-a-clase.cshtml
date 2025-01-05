@@ -1,0 +1,111 @@
+﻿@* @model AsignarProfesorAClaseViewModel
+
+@{
+    ViewData["Title"] = "Asignar Profesor a Clase";
+}
+
+<div class="container py-5">
+    <h1 class="text-center display-6 fw-bold text-primary mb-4">Asignar Profesor a Clase</h1>
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-5">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <form id="assignProfesorForm">
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                        <div class="mb-3">
+                            <label asp-for="ClaseId" class="form-label fw-bold">Clase</label>
+                            <select asp-for="ClaseId" class="form-select" id="ClaseId">
+                                <option value="" selected disabled>Seleccionar Clase</option>
+                            </select>
+                            <span asp-validation-for="ClaseId" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="ProfesorId" class="form-label fw-bold">Profesor</label>
+                            <select asp-for="ProfesorId" class="form-select" id="ProfesorId">
+                                <option value="" selected disabled>Seleccionar Profesor</option>
+                            </select>
+                            <span asp-validation-for="ProfesorId" class="text-danger"></span>
+                        </div>
+
+                        <div class="d-flex justify-content-between">
+                            <button type="button" id="saveProfesor" class="btn btn-primary shadow-sm">
+                                <i class="bi bi-save"></i> Asignar Profesor
+                            </button>
+                            <a asp-action="Index" class="btn btn-outline-secondary shadow-sm">
+                                <i class="bi bi-arrow-left"></i> Volver a la Lista
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            // Cargar lista de clases
+            $.ajax({
+                url: 'https://localhost:7008/Clase/GetClases',
+                type: 'GET',
+                success: function (data) {
+                    let options = '<option value="" selected disabled>Seleccionar Clase</option>';
+                    $.each(data, function (index, clase) {
+                        options += `<option value="${clase.id}">${clase.nameClass}</option>`;
+                    });
+                    $('#ClaseId').html(options);
+                },
+                error: function (error) {
+                    console.error('Error al cargar las clases:', error);
+                    alert('No se pudo cargar la lista de clases.');
+                }
+            });
+
+            // Cargar lista de profesores
+            $.ajax({
+                url: 'https://localhost:7008/Profesor/GetProfesores',
+                type: 'GET',
+                success: function (data) {
+                    let options = '<option value="" selected disabled>Seleccionar Profesor</option>';
+                    $.each(data, function (index, profesor) {
+                        if (profesor.isActive) {
+                            options += `<option value="${profesor.id}">${profesor.name} ${profesor.lastname}</option>`;
+                        }
+                    });
+                    $('#ProfesorId').html(options);
+                },
+                error: function (error) {
+                    console.error('Error al cargar los profesores:', error);
+                    alert('No se pudo cargar la lista de profesores.');
+                }
+            });
+
+            // Guardar asignación de profesor
+            $('#saveProfesor').click(function () {
+                const data = {
+                    ClaseId: $('#ClaseId').val(),
+                    ProfesorId: $('#ProfesorId').val()
+                };
+
+                $.ajax({
+                    url: 'https://localhost:7008/Clase/AsignarProfesor',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(data),
+                    success: function () {
+                        alert('Profesor asignado exitosamente');
+                        window.location.href = '/Clases/Index';
+                    },
+                    error: function (error) {
+                        console.error('Error al asignar profesor:', error);
+                        alert('No se pudo asignar el profesor a la clase.');
+                    }
+                });
+            });
+        });
+    </script>
+}
+ *@

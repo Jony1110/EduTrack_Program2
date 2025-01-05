@@ -1,0 +1,201 @@
+﻿@{
+    ViewData["Title"] = "Horario de Profesores y Estudiantes";
+}
+
+<div class="container py-5">
+    <h1 class="text-center display-6 fw-bold text-primary mb-4">Horario de Profesores y Estudiantes</h1>
+
+    <!-- Selector de Tipo -->
+    <div class="mb-4">
+        <label for="tipoSelect" class="form-label fw-bold">Seleccionar Tipo</label>
+        <select id="tipoSelect" class="form-select">
+            <option value="" selected disabled>Seleccione un Tipo</option>
+            <option value="Profesor">Profesor</option>
+            <option value="Estudiante">Estudiante</option>
+        </select>
+    </div>
+
+    <!-- Selector de Persona -->
+    <div class="mb-4 d-none" id="personaContainer">
+        <label for="personaSelect" class="form-label fw-bold">Seleccionar Persona</label>
+        <select id="personaSelect" class="form-select">
+            <option value="" selected disabled>Seleccione una Persona</option>
+        </select>
+    </div>
+
+    <!-- Tabla de Horarios -->
+    <div class="table-responsive">
+        <table class="table table-hover align-middle shadow-sm" id="horarioTable">
+            <thead class="table-primary">
+                <tr>
+                    <th>Nombre de la Clase</th>
+                    <th>Horario</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td colspan="2" class="text-center">Seleccione una persona para ver su horario</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="d-flex justify-content-end mb-4 d-none" id="imprimirContainer">
+    <button id="btnImprimir" class="btn btn-success me-2">
+        <i class="bi bi-printer"></i> Imprimir PDF
+    </button>
+</div>
+
+
+@* <div class="d-flex justify-content-end mb-4">
+    <button id="btnImprimir" class="btn btn-success me-2">
+        <i class="bi bi-printer"></i> Imprimir PDF
+    </button>
+    <button id="btnEnviarCorreo" class="btn btn-primary">
+        <i class="bi bi-envelope"></i> Enviar por Correo
+    </button>
+</div> *@
+
+
+@section Scripts {
+
+    <!-- Librería html2pdf -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
+
+    <script>
+                $(document).ready(function () {
+            let allClases = [];
+            let selectedPersona = ''; // Nombre de la persona seleccionada
+            let correoPersona = '';   // Correo de la persona seleccionada
+
+            $('#imprimirContainer').addClass('d-none'); // Ocultar botones inicialmente
+
+            // Cargar todas las clases
+            $.ajax({
+                url: 'https://localhost:7008/Clase/GetClases',
+                type: 'GET',
+                success: function (data) {
+                    allClases = data;
+                },
+                error: function () {
+                    alert('No se pudieron cargar las clases.');
+                }
+            });
+
+            // Evento al seleccionar el Tipo
+            $('#tipoSelect').change(function () {
+                const tipoSeleccionado = $(this).val();
+                let options = '<option value="" selected disabled>Seleccione una Persona</option>';
+                let endpoint = '';
+
+                if (tipoSeleccionado === "Profesor") {
+                    endpoint = 'https://localhost:7008/Profesor/GetProfesores';
+                } else if (tipoSeleccionado === "Estudiante") {
+                    endpoint = 'https://localhost:7008/Estudiante/GetEstudiantes';
+                }
+
+                $.ajax({
+                    url: endpoint,
+                    type: 'GET',
+                    success: function (data) {
+                        const personas = data.filter(p => p.isActive);
+                        $.each(personas, function (index, persona) {
+                            options += `<option value="${persona.id}"
+                                             data-name="${persona.name} ${persona.lastname}"
+                                             data-email="${persona.email}">
+                                             ${persona.name} ${persona.lastname}</option>`;
+                        });
+
+                        $('#personaSelect').html(options);
+                        $('#personaContainer').removeClass('d-none');
+                        $('#horarioTable tbody').html('<tr><td colspan="2" class="text-center">Seleccione una persona para ver su horario</td></tr>');
+                        $('#imprimirContainer').addClass('d-none');
+                    },
+                    error: function () {
+                        alert('No se pudo cargar la lista.');
+                    }
+                });
+            });
+
+            // Evento al seleccionar una Persona
+            $('#personaSelect').change(function () {
+                const personaId = $(this).val();
+                selectedPersona = $(this).find(':selected').data('name');
+                correoPersona = $(this).find(':selected').data('email'); // Obtener el correo de la persona
+
+                const clasesFiltradas = allClases.filter(clase => clase.profesorId == personaId);
+
+                let tableBody = '';
+
+                if (clasesFiltradas.length === 0) {
+                    tableBody = '<tr><td colspan="2" class="text-center">No hay clases asignadas a esta persona</td></tr>';
+                    $('#imprimirContainer').addClass('d-none');
+                } else {
+                    $.each(clasesFiltradas, function (index, clase) {
+                        tableBody += `
+                            <tr>
+                                <td>${clase.nameClass}</td>
+                                <td>${clase.schedule}</td>
+                            </tr>`;
+                    });
+                    $('#imprimirContainer').removeClass('d-none');
+                }
+
+                $('#horarioTable tbody').html(tableBody);
+            });
+
+            // Generar PDF
+            $('#btnImprimir').click(function () {
+                const title = `${$('#tipoSelect').val()} - ${selectedPersona}`;
+                const tableHtml = $('#horarioTable')[0].outerHTML;
+
+                const pdfContent = `
+                    <div style="text-align: center; margin-bottom: 20px;">
+                        <h2>${title}</h2>
+                    </div>
+                    ${tableHtml}
+                `;
+
+                const options = {
+                    margin: 0.5,
+                    filename: `${title.replace(/ /g, '_')}.pdf`,
+                    image: { type: 'jpeg', quality: 0.98 },
+                    html2canvas: { scale: 2 },
+                    jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+                };
+
+                html2pdf().set(options).from(pdfContent).save();
+            });
+
+            // Enviar PDF por correo
+            $('#btnEnviarCorreo').click(function () {
+                if (!correoPersona) {
+                    alert("La persona seleccionada no tiene un correo registrado.");
+                    return;
+                }
+
+                const title = `${$('#tipoSelect').val()} - ${selectedPersona}`;
+                const horarioHtml = $('#horarioTable')[0].outerHTML;
+
+                $.ajax({
+                    url: 'https://localhost:7008/Clase/EnviarHorarioCorreo',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({
+                        Correo: correoPersona,
+                        NombrePersona: title,
+                        HorarioHtml: horarioHtml
+                    }),
+                    success: function () {
+                        alert('¡El horario fue enviado exitosamente por correo!');
+                    },
+                    error: function () {
+                        alert('Ocurrió un error al enviar el correo.');
+                    }
+                });
+            });
+        });
+
+    </script>
+}

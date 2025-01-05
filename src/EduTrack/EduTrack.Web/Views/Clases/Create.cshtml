@@ -25,13 +25,13 @@
                             <span asp-validation-for="Schedule" class="text-danger"></span>
                         </div>
 
-                        <div class="mb-3">
+                        @* <div class="mb-3">
                             <label asp-for="ProfesorId" class="form-label fw-bold">Profesor</label>
                             <select asp-for="ProfesorId" class="form-select" id="ProfesorId">
                                 <option value="" selected disabled>Seleccionar Profesor</option>
                             </select>
                             <span asp-validation-for="ProfesorId" class="text-danger"></span>
-                        </div>
+                        </div> *@
 
                         <div class="d-flex justify-content-between">
                             <button type="button" id="saveClase" class="btn btn-primary shadow-sm">
@@ -52,28 +52,32 @@
     <script>
         $(document).ready(function () {
             // GET: Cargar lista de profesores para la selección
-            $.ajax({
-                url: 'https://localhost:7008/Profesor/GetProfesores', // API para obtener profesores
-                type: 'GET',
-                success: function (data) {
-                    let options = '<option value="" selected disabled>Seleccionar Profesor</option>';
-                    $.each(data, function (index, profesor) {
-                        options += `<option value="${profesor.id}">${profesor.name} ${profesor.lastname}</option>`;
-                    });
-                    $('#ProfesorId').html(options);
-                },
-                error: function (error) {
-                    console.error('Error al cargar la lista de profesores:', error);
-                    alert('No se pudo cargar la lista de profesores.');
-                }
-            });
+        //             $.ajax({
+        //     url: 'https://localhost:7008/Profesor/GetProfesores', // API para obtener profesores
+        //     type: 'GET',
+        //     success: function (data) {
+        //         let options = '<option value="" selected disabled>Seleccionar Profesor</option>';
+        //         $.each(data, function (index, profesor) {
+        //             // Solo incluir profesores activos
+        //             if (profesor.isActive) {
+        //                 options += `<option value="${profesor.id}">${profesor.name} ${profesor.lastname}</option>`;
+        //             }
+        //         });
+        //         $('#ProfesorId').html(options);
+        //     },
+        //     error: function (error) {
+        //         console.error('Error al cargar la lista de profesores:', error);
+        //         alert('No se pudo cargar la lista de profesores.');
+        //     }
+        // });
+
 
             // POST: Enviar datos de la nueva clase
             $('#saveClase').click(function () {
                 const claseData = {
                     NameClass: $('#NameClass').val(),
                     Schedule: $('#Schedule').val(),
-                    ProfesorId: $('#ProfesorId').val()
+                    // ProfesorId: $('#ProfesorId').val()
                 };
 
                 $.ajax({

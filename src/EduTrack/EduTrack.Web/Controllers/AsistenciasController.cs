@@ -2,9 +2,9 @@
 
 namespace EduTrack.Web.Controllers
 {
-    public class ClasesController : Controller
+    public class AsistenciasController : Controller
     {
-        public ClasesController()
+        public AsistenciasController()
         {
 
         }
@@ -27,18 +27,12 @@ namespace EduTrack.Web.Controllers
             return View();
         }
 
-       // GET: Clases/Edit/5
+        // GET: Asistencias/Edit/5
         public async Task<IActionResult> Edit(int id)
         {
-            ViewData["ClaseId"] = id;
+            ViewData["AsistenciaId"] = id; // ID de la asistencia
             return View();
         }
-
-        public async Task<IActionResult> AsignarProfesorAClase()
-        {
-            return View();
-        }
-
 
     }
 }

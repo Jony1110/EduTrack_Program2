@@ -14,7 +14,7 @@
         <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
             <div class="container-fluid">
                 <a class="navbar-brand fw-bold text-uppercase" asp-area="" asp-controller="Home" asp-action="Index">
-                    @* <img src="~/images/logo.png" alt="EduTrack" height="30" class="d-inline-block align-text-top"> *@ EduTrack
+                    EduTrack
                 </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav"
                         aria-expanded="false" aria-label="Toggle navigation">
@@ -23,28 +23,33 @@
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav ms-auto">
                         <li class="nav-item">
-                            <a class="nav-link active text-light" asp-controller="Home" asp-action="Index">
-                                <i class="bi bi-house-door"></i> Home
-                            </a>
-                        </li>
-                        @* <li class="nav-item">
-                            <a class="nav-link text-light" asp-controller="Home" asp-action="Privacy">
-                                <i class="bi bi-shield-lock"></i> Privacy
-                            </a>
-                        </li> *@
-                        <li class="nav-item">
-                            <a class="nav-link text-light" asp-controller="Profesores" asp-action="Index">
-                                <i class="bi bi-people"></i> Maestro
+                            <a class="nav-link @(ViewData["Title"].ToString() == "Home Page" ? "active" : "")" asp-controller="Home" asp-action="Index">
+                                <i class="bi bi-house"></i> Home
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-light" asp-controller="Estudiantes" asp-action="Index">
-                                <i class="bi bi-people"></i> Alumnos
+                            <a class="nav-link @(ViewData["Title"].ToString() == "Maestros" ? "active" : "")" asp-controller="Profesores" asp-action="Index">
+                                <i class="bi bi-person-badge"></i> Maestro
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-light" asp-controller="Clases" asp-action="Index">
-                                <i class="bi bi-people"></i> Clases
+                            <a class="nav-link @(ViewData["Title"].ToString() == "Estudiantes" ? "active" : "")" asp-controller="Estudiantes" asp-action="Index">
+                                <i class="bi bi-person"></i> Alumnos
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link @(ViewData["Title"].ToString() == "Clases" ? "active" : "")" asp-controller="Clases" asp-action="Index">
+                                <i class="bi bi-journal-bookmark"></i> Clases
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link @(ViewData["Title"].ToString() == "Horario de Profesores y Estudiantes" ? "active" : "")" asp-controller="Horarios" asp-action="Index">
+                                <i class="bi bi-calendar-week"></i> Horarios
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link @(ViewData["Title"].ToString() == "Asistencias" ? "active" : "")" asp-controller="Asistencias" asp-action="Index">
+                                <i class="bi bi-clipboard-check"></i> Asistencias
                             </a>
                         </li>
                     </ul>
@@ -69,4 +74,3 @@
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
-

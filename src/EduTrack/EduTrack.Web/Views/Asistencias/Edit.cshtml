@@ -1,0 +1,155 @@
+﻿@model EduTrack.Domain.ViewModels.EditAsistenciaViewModel
+
+@{
+    ViewData["Title"] = "Editar Asistencia";
+}
+
+<div class="container py-5">
+    <h1 class="text-center display-6 fw-bold text-primary mb-4">Editar Asistencia</h1>
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-5">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <form id="editAsistenciaForm">
+                        <input type="hidden" asp-for="Id_Asistencia" id="Id_Asistencia" />
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                        <div class="mb-3">
+                            <label asp-for="Id_Clase" class="form-label fw-bold">Clase</label>
+                            <select asp-for="Id_Clase" class="form-select" id="Id_Clase">
+                                <option value="" selected disabled>Seleccionar Clase</option>
+                            </select>
+                            <span asp-validation-for="Id_Clase" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Id_Estudiante" class="form-label fw-bold">Estudiante</label>
+                            <select asp-for="Id_Estudiante" class="form-select" id="Id_Estudiante">
+                                <option value="" selected disabled>Seleccionar Estudiante</option>
+                            </select>
+                            <span asp-validation-for="Id_Estudiante" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Fecha" class="form-label fw-bold">Fecha</label>
+                            <input asp-for="Fecha" class="form-control" id="Fecha" />
+                            <span asp-validation-for="Fecha" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Estado" class="form-label fw-bold">Estado</label>
+                            <select asp-for="Estado" class="form-select" id="Estado">
+                                <option value="Presente">Presente</option>
+                                <option value="Ausente">Ausente</option>
+                                <option value="Tarde">Tarde</option>
+                            </select>
+                            <span asp-validation-for="Estado" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Nota" class="form-label fw-bold">Nota</label>
+                            <textarea asp-for="Nota" class="form-control" id="Nota"></textarea>
+                            <span asp-validation-for="Nota" class="text-danger"></span>
+                        </div>
+
+                        <div class="d-flex justify-content-between">
+                            <button type="button" id="saveAsistencia" class="btn btn-primary shadow-sm">
+                                <i class="bi bi-save"></i> Guardar Cambios
+                            </button>
+                            <a asp-action="Index" class="btn btn-outline-secondary shadow-sm">
+                                <i class="bi bi-arrow-left"></i> Volver a la Lista
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            const asistenciaId = @Html.Raw(Json.Serialize(ViewData["AsistenciaId"]));
+
+            // GET: Cargar datos de la asistencia
+            $.ajax({
+                url: `https://localhost:7008/Asistencia/GetAsistencia/${asistenciaId}`,
+                type: 'GET',
+                success: function (data) {
+                    $('#Id_Asistencia').val(data.id_asistencia);
+                    $('#Id_Clase').val(data.id_clase);
+                    $('#Id_Estudiante').val(data.id_estudiante);
+                    $('#Fecha').val(data.fecha);
+                    $('#Estado').val(data.estado);
+                    $('#Nota').val(data.nota);
+                },
+                error: function (error) {
+                    console.error('Error al obtener los datos de la asistencia:', error);
+                    alert('No se pudo cargar la información de la asistencia.');
+                }
+            });
+
+            // GET: Cargar lista de clases
+            $.ajax({
+                url: 'https://localhost:7008/Clase/GetClases',
+                type: 'GET',
+                success: function (data) {
+                    let options = '<option value="" selected disabled>Seleccionar Clase</option>';
+                    $.each(data, function (index, clase) {
+                        options += `<option value="${clase.id}">${clase.nameClass}</option>`;
+                    });
+                    $('#Id_Clase').html(options);
+                },
+                error: function (error) {
+                    console.error('Error al cargar las clases:', error);
+                    alert('No se pudieron cargar las clases.');
+                }
+            });
+
+            // GET: Cargar lista de estudiantes
+            $.ajax({
+                url: 'https://localhost:7008/Estudiante/GetEstudiantes',
+                type: 'GET',
+                success: function (data) {
+                    let options = '<option value="" selected disabled>Seleccionar Estudiante</option>';
+                    $.each(data, function (index, estudiante) {
+                        options += `<option value="${estudiante.id}">${estudiante.name} ${estudiante.lastname}</option>`;
+                    });
+                    $('#Id_Estudiante').html(options);
+                },
+                error: function (error) {
+                    console.error('Error al cargar los estudiantes:', error);
+                    alert('No se pudieron cargar los estudiantes.');
+                }
+            });
+
+            // PUT: Guardar cambios
+            $('#saveAsistencia').click(function () {
+                const asistenciaData = {
+                    id_asistencia: $('#Id_Asistencia').val(),
+                    id_clase: $('#Id_Clase').val(),
+                    id_estudiante: $('#Id_Estudiante').val(),
+                    fecha: $('#Fecha').val(),
+                    estado: $('#Estado').val(),
+                    nota: $('#Nota').val()
+                };
+
+                $.ajax({
+                    url: `https://localhost:7008/Asistencia/UpdateAsistencia/${asistenciaId}`,
+                    type: 'PUT',
+                    contentType: 'application/json',
+                    data: JSON.stringify(asistenciaData),
+                    success: function (response) {
+                        alert('¡Asistencia actualizada exitosamente!');
+                        window.location.href = '/Asistencias/Index';
+                    },
+                    error: function (error) {
+                        console.error('Error al actualizar la asistencia:', error);
+                        alert('Ocurrió un error al actualizar la asistencia.');
+                    }
+                });
+            });
+        });
+    </script>
+}

@@ -1,0 +1,218 @@
+﻿@model IEnumerable<EduTrack.Domain.Entities.Asistencia>
+
+@{
+    ViewData["Title"] = "Asistencias";
+}
+
+<div class="container py-5">
+    <h1 class="text-center display-6 fw-bold text-primary mb-4">Lista de Asistencias</h1>
+
+    <div id="errorAlert" class="alert alert-danger d-none">
+        <strong>Error:</strong> No se pudieron cargar los datos de asistencia. Inténtelo de nuevo más tarde.
+    </div>
+
+    <!-- Formulario de Filtros -->
+    <div class="card mb-4 shadow-sm">
+        <div class="card-body">
+            <form id="filterForm" class="row g-3">
+                <div class="col-md-3">
+                    <label for="filterClase" class="form-label">Materia</label>
+                    <select id="filterClase" class="form-select">
+                        <option value="">Todas</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label for="filterEstudiante" class="form-label">Estudiante</label>
+                    <select id="filterEstudiante" class="form-select">
+                        <option value="">Todos</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label for="filterFecha" class="form-label">Fecha</label>
+                    <input type="date" id="filterFecha" class="form-control" />
+                </div>
+                <div class="col-md-3">
+                    <label for="filterEstado" class="form-label">Estado</label>
+                    <select id="filterEstado" class="form-select">
+                        <option value="">Todos</option>
+                        <option value="Presente">Presente</option>
+                        <option value="Ausente">Ausente</option>
+                        <option value="Tarde">Tarde</option>
+                    </select>
+                </div>
+                <div class="col-md-12 text-end">
+                    <button type="button" class="btn btn-primary shadow-sm" id="applyFilters">
+                        <i class="bi bi-filter"></i> Aplicar Filtros
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="d-flex justify-content-end mb-3">
+        <a class="btn btn-success shadow-sm" id="addAsistenciaButton">
+            <i class="bi bi-plus-circle"></i> Registrar Asistencia
+        </a>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-hover align-middle shadow-sm">
+            <thead class="table-primary">
+                <tr>
+                    <th>ID</th>
+                    <th>Clase</th>
+                    <th>Estudiante</th>
+                    <th>Fecha</th>
+                    <th>Estado</th>
+                    <th>Nota</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody id="asistenciasTableBody">
+                <tr>
+                    <td colspan="7" class="text-center">Cargando datos...</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        let allAsistencias = []; // Variable para almacenar todas las asistencias
+
+        $(document).ready(function () {
+            loadAsistencias();
+
+            // Cargar filtros dinámicos
+            loadFilterOptions();
+
+            // Aplicar filtros
+            $('#applyFilters').click(function () {
+                applyFilters();
+            });
+
+            // Registrar nueva asistencia
+            $('#addAsistenciaButton').click(function () {
+                window.location.href = '@Url.Action("Create", "Asistencias")';
+            });
+        });
+
+        // Función para cargar todas las asistencias
+        function loadAsistencias() {
+            $.ajax({
+                url: 'https://localhost:7008/Asistencia/GetAllAsistencias', // Endpoint existente
+                type: 'GET',
+                success: function (data) {
+                    allAsistencias = data; // Guardar todas las asistencias en memoria
+                    renderTable(data); // Renderizar la tabla inicial
+                },
+                error: function (error) {
+                    console.log('Error:', error);
+                    $('#errorAlert').removeClass('d-none');
+                    $('#asistenciasTableBody').html('<tr><td colspan="7" class="text-center">Error al cargar los datos</td></tr>');
+                }
+            });
+        }
+
+        // Función para cargar opciones de filtros dinámicos
+        function loadFilterOptions() {
+            // Cargar materias
+            $.ajax({
+                                url: 'https://localhost:7008/Clase/GetClases', // Endpoint para clases
+                type: 'GET',
+                success: function (data) {
+                    let claseOptions = '<option value="">Todas</option>';
+                    data.forEach(clase => {
+                        claseOptions += `<option value="${clase.id}">${clase.nameClass}</option>`;
+                    });
+                    $('#filterClase').html(claseOptions);
+                }
+            });
+
+            // Cargar estudiantes
+            $.ajax({
+                        url: 'https://localhost:7008/Estudiante/GetEstudiantes', // Endpoint para estudiantes
+                type: 'GET',
+                success: function (data) {
+                    let estudianteOptions = '<option value="">Todos</option>';
+                    data.forEach(estudiante => {
+                        estudianteOptions += `<option value="${estudiante.id}">${estudiante.name} ${estudiante.lastname}</option>`;
+                    });
+                    $('#filterEstudiante').html(estudianteOptions);
+                }
+            });
+        }
+
+        // Función para aplicar filtros
+        function applyFilters() {
+            const clase = $('#filterClase').val();
+            const estudiante = $('#filterEstudiante').val();
+            const fecha = $('#filterFecha').val();
+            const estado = $('#filterEstado').val();
+
+            const filteredData = allAsistencias.filter(asistencia => {
+                return (
+                    (clase === "" || asistencia.id_clase == clase) &&
+                    (estudiante === "" || asistencia.id_estudiante == estudiante) &&
+                    (fecha === "" || asistencia.fecha === fecha) &&
+                    (estado === "" || asistencia.estado === estado)
+                );
+            });
+
+            renderTable(filteredData); // Renderizar tabla filtrada
+        }
+
+        // Función para renderizar la tabla
+                function renderTable(data) {
+            let tableBody = '';
+
+            if (data.length === 0) {
+                tableBody = '<tr><td colspan="7" class="text-center">No hay registros disponibles</td></tr>';
+            } else {
+                data.forEach(asistencia => {
+                    const nota = asistencia.nota || "Sin nota";
+                    tableBody += `
+                        <tr>
+                            <td>${asistencia.id_asistencia}</td>
+                            <td>${asistencia.claseNombre || "Clase no encontrada"}</td>
+                            <td>${asistencia.nombreEstudiante || "Estudiante no encontrado"}</td>
+                            <td>${asistencia.fecha}</td>
+                            <td>${asistencia.estado}</td>
+                            <td>${nota}</td>
+                            <td>
+                               <button class="btn btn-sm btn-warning edit-asistencia" onclick="window.location.href='/Asistencias/Edit/${asistencia.id_asistencia}'">
+                                    <i class="bi bi-pencil-square"></i> Editar
+                               </button>
+                                <button class="btn btn-sm btn-danger delete-asistencia" onclick="deleteAsistencia(${asistencia.id_asistencia}, '${asistencia.fecha}')">
+                                    <i class="bi bi-trash"></i> Eliminar
+                                </button>
+                            </td>
+                        </tr>`;
+                });
+            }
+
+            $('#asistenciasTableBody').html(tableBody);
+        }
+
+
+                function deleteAsistencia(idAsistencia, fecha) {
+            if (confirm('¿Estás seguro de que quieres eliminar esta asistencia?')) {
+                $.ajax({
+                    url: `https://localhost:7008/Asistencia/DeleteAsistencias/${idAsistencia}/${fecha}`,
+                    type: 'DELETE',
+                    success: function () {
+                        alert('Asistencia eliminada exitosamente');
+                        loadAsistencias(); // Recarga la tabla de asistencias
+                    },
+                    error: function (error) {
+                        console.error('Error:', error);
+                        alert('No se pudo eliminar la asistencia.');
+                    }
+                });
+            }
+        }
+
+
+    </script>
+}

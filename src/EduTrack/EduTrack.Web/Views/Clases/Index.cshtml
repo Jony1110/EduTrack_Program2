@@ -12,9 +12,19 @@
         <strong>Advertencia:</strong> Hay clases sin maestro asignado. Por favor, verifica.
     </div>
 
+    <div id="profesorInactivoAlert" class="alert alert-danger d-none">
+        <strong>Atención:</strong> Hay clases con profesores inactivos. Por favor, reasigne un nuevo profesor.
+    </div>
+
     <div class="d-flex justify-content-end mb-3">
-        <a class="btn btn-primary shadow-sm" id="addClaseButton">
+        <a class="btn btn-primary shadow-sm me-2" id="addClaseButton">
             <i class="bi bi-plus-circle"></i> Crear Nueva Clase
+        </a>
+        @* <a class="btn btn-info shadow-sm me-2" id="assignProfesorButton">
+            <i class="bi bi-person-plus"></i> Asignar Profesor
+        </a> *@
+        <a class="btn btn-success shadow-sm" id="assignEstudianteButton">
+            <i class="bi bi-person-plus"></i> Asignar Estudiante
         </a>
     </div>
 
@@ -48,12 +58,22 @@
                 window.location.href = '@Url.Action("Create", "Clases")';
             });
 
+            // Asignar profesor
+            $('#assignProfesorButton').click(function () {
+                window.location.href = '@Url.Action("AsignarProfesorAClase", "Clases")';
+            });
+
+            // Asignar estudiante
+            $('#assignEstudianteButton').click(function () {
+                window.location.href = '@Url.Action("AsignarEstudianteAClase", "Clases")';
+            });
+
             // Eliminar clase
             $(document).on('click', '.delete-clase', function () {
                 var claseId = $(this).data('id');
                 if (confirm('¿Estás seguro de que quieres eliminar esta clase?')) {
                     $.ajax({
-                        url: `https://localhost:7008/Clase/DeleteClase/${claseId}`, // URL de la API
+                        url: `https://localhost:7008/Clase/DeleteClase/${claseId}`,
                         type: 'DELETE',
                         success: function () {
                             alert('Clase eliminada exitosamente');
@@ -70,60 +90,72 @@
             // Editar clase
             $(document).on('click', '.edit-clase', function () {
                 var claseId = $(this).data('id');
-                window.location.href = `@Url.Action("Edit", "Clases")/${claseId}`;
+                window.location.href = '@Url.Action("Edit", "Clases")/' + claseId;
             });
+
+            // Función para cargar las clases
+            function loadClases() {
+                $.ajax({
+                    url: 'https://localhost:7008/Clase/GetClases',
+                    type: 'GET',
+                    success: function (data) {
+                        var tableBody = '';
+                        var clasesSinMaestro = 0;
+                        var clasesConProfesorInactivo = 0;
+
+                        if (data.length === 0) {
+                            tableBody = '<tr><td colspan="5" class="text-center">No hay registros disponibles</td></tr>';
+                        } else {
+                            $.each(data, function (index, clase) {
+                                const profesorName = clase.profesorName || "No asignado";
+                                const profesorInactivo = clase.profesorInactivo;
+
+                                if (profesorName === "No asignado") {
+                                    clasesSinMaestro++;
+                                }
+
+                                if (profesorInactivo) {
+                                    clasesConProfesorInactivo++;
+                                }
+
+                                tableBody += `
+                                    <tr>
+                                        <td>${clase.id}</td>
+                                        <td>${clase.nameClass}</td>
+                                        <td>${clase.schedule}</td>
+                                        <td>${profesorName}</td>
+                                        <td>
+                                            <a class="btn btn-sm btn-warning edit-clase" data-id="${clase.id}">
+                                                <i class="bi bi-pencil-square"></i> Editar
+                                            </a>
+                                            <button class="btn btn-sm btn-danger delete-clase" data-id="${clase.id}">
+                                                <i class="bi bi-trash"></i> Eliminar
+                                            </button>
+                                        </td>
+                                    </tr>`;
+                            });
+                        }
+
+                        if (clasesSinMaestro > 0) {
+                            $('#clasesSinMaestroAlert').removeClass('d-none');
+                        } else {
+                            $('#clasesSinMaestroAlert').addClass('d-none');
+                        }
+
+                        if (clasesConProfesorInactivo > 0) {
+                            $('#profesorInactivoAlert').removeClass('d-none');
+                        } else {
+                            $('#profesorInactivoAlert').addClass('d-none');
+                        }
+
+                        $('#clasesTableBody').html(tableBody);
+                    },
+                    error: function (error) {
+                        console.log('Error:', error);
+                        $('#clasesTableBody').html('<tr><td colspan="5" class="text-center">Error al cargar los datos</td></tr>');
+                    }
+                });
+            }
         });
-
-        // Función para cargar las clases
-        function loadClases() {
-            $.ajax({
-                url: 'https://localhost:7008/Clase/GetClases', // URL de la API que devuelve las clases
-                type: 'GET',
-                success: function (data) {
-                    var tableBody = '';
-                    var clasesSinMaestro = 0; // Contador de clases sin maestro
-
-                    if (data.length === 0) {
-                        tableBody = '<tr><td colspan="5" class="text-center">No hay registros disponibles</td></tr>';
-                    } else {
-                        $.each(data, function (index, clase) {
-                            // Verificar si la clase no tiene profesor asignado
-                            if (!clase.profesorName || clase.profesorName === "No asignado") {
-                                clasesSinMaestro++;
-                            }
-
-                            tableBody += `
-                                <tr>
-                                    <td>${clase.id}</td>
-                                    <td>${clase.nameClass}</td>
-                                    <td>${clase.schedule}</td>
-                                    <td>${clase.profesorName || "No asignado"}</td>
-                                    <td>
-                                        <a class="btn btn-sm btn-warning edit-clase" data-id="${clase.id}">
-                                            <i class="bi bi-pencil-square"></i> Editar
-                                        </a>
-                                        <button class="btn btn-sm btn-danger delete-clase" data-id="${clase.id}">
-                                            <i class="bi bi-trash"></i> Eliminar
-                                        </button>
-                                    </td>
-                                </tr>`;
-                        });
-                    }
-
-                    // Mostrar u ocultar la alerta según el resultado
-                    if (clasesSinMaestro > 0) {
-                        $('#clasesSinMaestroAlert').removeClass('d-none');
-                    } else {
-                        $('#clasesSinMaestroAlert').addClass('d-none');
-                    }
-
-                    $('#clasesTableBody').html(tableBody);
-                },
-                error: function (error) {
-                    console.log('Error:', error);
-                    $('#clasesTableBody').html('<tr><td colspan="5" class="text-center">Error al cargar los datos</td></tr>');
-                }
-            });
-        }
     </script>
 }

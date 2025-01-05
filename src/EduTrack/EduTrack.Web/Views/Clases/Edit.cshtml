@@ -73,21 +73,27 @@
             });
 
             // GET: Cargar lista de profesores
-            $.ajax({
-                url: 'https://localhost:7008/Profesor/GetProfesores',
-                type: 'GET',
-                success: function (data) {
-                    let options = '<option value="" selected disabled>Seleccionar Profesor</option>';
-                    $.each(data, function (index, profesor) {
-                        options += `<option value="${profesor.id}">${profesor.name} ${profesor.lastname}</option>`;
-                    });
-                    $('#ProfesorId').html(options);
-                },
-                error: function (error) {
-                    console.error('Error al cargar la lista de profesores:', error);
-                    alert('No se pudo cargar la lista de profesores.');
-                }
-            });
+                    $.ajax({
+            url: 'https://localhost:7008/Profesor/GetProfesores',
+            type: 'GET',
+            success: function (data) {
+                let options = '<option value="" selected disabled>Seleccionar Profesor</option>';
+                $.each(data, function (index, profesor) {
+                    // Si el profesor está inactivo, lo deshabilitamos
+                    const disabled = profesor.isActive ? '' : 'disabled';
+                    const statusText = profesor.isActive ? '' : ' (Inactivo)';
+                    options += `
+                        <option value="${profesor.id}" ${disabled}>
+                            ${profesor.name} ${profesor.lastname}${statusText}
+                        </option>`;
+                });
+                $('#ProfesorId').html(options);
+            },
+            error: function (error) {
+                console.error('Error al cargar la lista de profesores:', error);
+                alert('No se pudo cargar la lista de profesores.');
+            }
+        });
 
             // PUT: Enviar datos actualizados a la API
             $('#saveClase').click(function () {
